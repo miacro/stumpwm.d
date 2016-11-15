@@ -41,4 +41,3 @@
         ))
  )
 (stumpwm:add-hook stumpwm:*mode-line-click-hook* 'my-popup)
-(echo *load-path*)
