@@ -1,5 +1,13 @@
 ;; -*-lisp-*-
 ;;
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+(ql:quickload :clx)
+(ql:quickload :cl-ppcre)
 
 (stumpwm:set-prefix-key (kbd "C-z"))
 ;; Message window font
@@ -17,14 +25,15 @@
 (stumpwm:toggle-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head))
 (setf stumpwm:*screen-mode-line-format*
-      (list "%w | %c | %m | %h | %M | %I |" 
+      (list "%w | %c | %M | " 
             '(:eval (stumpwm:run-shell-command "date" t))))
 
 ;;(setf *debug-level* 1)
 ;;(redirect-all-output (data-dir-file "debug-output" "txt"))
 
 (defun my-popup (mode-line button x y) 
-  (echo (format nil "~A ~A ~A ~A ~% ~A ~% ~A ~A" 
+  (echo (format nil "~A ~A ~A ~A" 
                 mode-line button x y
                 )))
 (stumpwm:add-hook stumpwm:*mode-line-click-hook* 'my-popup)
+
