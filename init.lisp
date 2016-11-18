@@ -36,4 +36,4 @@
                 mode-line button x y
                 )))
 (stumpwm:add-hook stumpwm:*mode-line-click-hook* 'my-popup)
-
+(run-shell-command (concatenate 'string "display -window root " "~/pictures/green/zrls10.jpg"))
