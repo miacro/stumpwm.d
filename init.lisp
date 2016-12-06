@@ -36,4 +36,12 @@
                 mode-line button x y
                 )))
 (stumpwm:add-hook stumpwm:*mode-line-click-hook* 'my-popup)
-(run-shell-command (concatenate 'string "display -window root " "~/pictures/green/zrls10.jpg"))
+
+(defun select-random-background (image-dir)
+  "Select a random image from image-dir"
+  (let ((file-list (directory (concatenate 'string image-dir "*.jpg"))))
+    (namestring (nth (random (length file-list) (make-random-state t)) file-list))))
+(defun display-background (image-path)
+  "Select display an image"
+  (run-shell-command (concatenate 'string "display -window root " image-path)))
+(display-background (select-random-background "~/pictures/dream/"))
