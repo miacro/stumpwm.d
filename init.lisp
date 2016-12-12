@@ -39,9 +39,17 @@
 
 (defun select-random-background (image-dir)
   "Select a random image from image-dir"
-  (let ((file-list (directory (concatenate 'string image-dir "*.jpg"))))
-    (namestring (nth (random (length file-list) (make-random-state t)) file-list))))
+  (flet ((get-file-list-by-type
+           (type) 
+           (directory (concatenate 'string image-dir "/**/*." type))))
+    (let ((file-list (append (get-file-list-by-type "jpg")
+                             (get-file-list-by-type "png"))))
+      (namestring 
+        (nth 
+          (random 
+            (length file-list) 
+            (make-random-state t)) file-list)))))
 (defun display-background (image-path)
   "Select display an image"
   (run-shell-command (concatenate 'string "display -window root " image-path)))
-(display-background (select-random-background "~/pictures/dream/"))
+(display-background (select-random-background "~/pictures/"))
