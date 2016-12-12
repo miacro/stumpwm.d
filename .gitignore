@@ -111,4 +111,5 @@ install_manifest.txt
 
 /bin
 /modules/stumpwm-contrib
+/modules/stumpwm-contrib.git
 /share
