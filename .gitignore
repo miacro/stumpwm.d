@@ -113,3 +113,4 @@ install_manifest.txt
 /modules/stumpwm-contrib
 /modules/stumpwm-contrib.git
 /share
+/.cache
