@@ -25,7 +25,7 @@
 (stumpwm:toggle-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head))
 (setf stumpwm:*screen-mode-line-format*
-      (list "%w | %c | %M | " 
+      (list " %w | %c | %M | " 
             '(:eval (stumpwm:run-shell-command "date" t))))
 
 ;;(setf *debug-level* 1)
@@ -37,4 +37,10 @@
                 )))
 (stumpwm:add-hook stumpwm:*mode-line-click-hook* 'my-popup)
 (stumpwm:load-module "miacro-theme")
-(miacro-theme:display-background (miacro-theme:select-random-background "~/pictures/"))
+(run-with-timer 0 3600 #'(lambda () 
+                          (miacro-theme:display-background 
+                            (miacro-theme:select-random-background "~/pictures"))))
+;;(miacro-theme:display-background (miacro-theme:select-random-background "~/pictures/"))
+(grename "chrome")
+(gnewbg "emacs")
+(gnewbg "rtorrent")
