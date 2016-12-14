@@ -22,6 +22,7 @@
 (stumpwm:load-module "app-menu")
 (stumpwm:load-module "mem")
 (stumpwm:load-module "net")
+(load-module "stumptray")
 (stumpwm:toggle-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head))
 (setf stumpwm:*screen-mode-line-format*
