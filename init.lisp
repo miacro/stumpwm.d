@@ -1,33 +1,33 @@
 ;; -*-lisp-*-
 ;;
-;;; The following lines added by ql:add-to-init-file:
 #-quicklisp
 (let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
+
 (ql:quickload :clx)
 (ql:quickload :cl-ppcre)
 
-(stumpwm:set-prefix-key (kbd "C-z"))
+(set-prefix-key (kbd "C-z"))
 ;; Message window font
 (set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
 (clear-window-placement-rules)
 
-(stumpwm:load-module "mpd")
-(stumpwm:load-module "notifications")
-(stumpwm:load-module "cpu")
-(stumpwm:load-module "hostname")
-(stumpwm:load-module "wifi")
-(stumpwm:load-module "app-menu")
-(stumpwm:load-module "mem")
-(stumpwm:load-module "net")
+(load-module "mpd")
+(load-module "notifications")
+(load-module "cpu")
+(load-module "hostname")
+(load-module "wifi")
+(load-module "app-menu")
+(load-module "mem")
+(load-module "net")
 (load-module "stumptray")
-(stumpwm:toggle-mode-line (stumpwm:current-screen)
-                          (stumpwm:current-head))
-(setf stumpwm:*screen-mode-line-format*
+(toggle-mode-line (current-screen)
+                  (current-head))
+(setf *screen-mode-line-format*
       (list " %w | %c | %M | " 
-            '(:eval (stumpwm:run-shell-command "date" t))))
+            '(:eval (run-shell-command "date" t))))
 
 ;;(setf *debug-level* 1)
 ;;(redirect-all-output (data-dir-file "debug-output" "txt"))
@@ -36,11 +36,11 @@
   (echo (format nil "~A ~A ~A ~A" 
                 mode-line button x y
                 )))
-(stumpwm:add-hook stumpwm:*mode-line-click-hook* 'my-popup)
-(stumpwm:load-module "miacro-theme")
+(add-hook *mode-line-click-hook* 'my-popup)
+(load-module "miacro-theme")
 (run-with-timer 0 3600 #'(lambda () 
-                          (miacro-theme:display-background 
-                            (miacro-theme:select-random-background "~/pictures"))))
+                           (miacro-theme:display-background 
+                             (miacro-theme:select-random-background "~/pictures"))))
 ;;(miacro-theme:display-background (miacro-theme:select-random-background "~/pictures/"))
 (grename "chrome")
 (gnewbg "emacs")
