@@ -19,7 +19,6 @@
 (load-module "cpu")
 (load-module "hostname")
 (load-module "wifi")
-(load-module "app-menu")
 (load-module "mem")
 (load-module "net")
 (load-module "stumptray")
@@ -38,6 +37,7 @@
                 )))
 (add-hook *mode-line-click-hook* 'my-popup)
 (load-module "miacro-theme")
+(load-module "miacro-app-menu")
 (run-with-timer 0 3600 #'(lambda () 
                            (miacro-theme:display-background 
                              (miacro-theme:select-random-background "~/pictures"))))
@@ -45,3 +45,5 @@
 (grename "chrome")
 (gnewbg "emacs")
 (gnewbg "rtorrent")
+(miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
+                             ("xterm" "xterm")))
