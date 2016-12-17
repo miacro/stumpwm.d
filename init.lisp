@@ -8,6 +8,8 @@
 
 (ql:quickload :clx)
 (ql:quickload :cl-ppcre)
+(ql:quickload :alexandria)
+(ql:quickload :zpng)
 
 (set-prefix-key (kbd "C-z"))
 ;; Message window font
@@ -21,6 +23,7 @@
 (load-module "wifi")
 (load-module "mem")
 (load-module "net")
+(load-module "screenshot")
 (load-module "stumptray")
 (toggle-mode-line (current-screen)
                   (current-head))

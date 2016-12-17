@@ -2,7 +2,6 @@
 sbcl --eval "(ql:quickload :clx)" --quit
 sbcl --eval "(ql:quickload :cl-ppcre)" --quit
 sbcl --eval "(ql:quickload :xembed)" --quit
-sbcl --eval "(ql:quickload  :alexandria)" --quit
 
 cache_dir=${HOME}/.stumpwm.d/.cache
 cache_stumpwm_dir=${cache_dir}/stumpwm
