@@ -44,9 +44,9 @@
 (run-with-timer 0 3600 #'(lambda () 
                            (miacro-theme:display-background 
                              (miacro-theme:select-random-background "~/pictures"))))
-;;(miacro-theme:display-background (miacro-theme:select-random-background "~/pictures/"))
 (grename "chrome")
 (gnewbg "emacs")
 (gnewbg "rtorrent")
 (miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
                              ("xterm" "xterm")))
+(stumptray:add-mode-line-hooks)
