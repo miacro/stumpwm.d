@@ -5,16 +5,15 @@
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
-
 (ql:quickload :clx)
 (ql:quickload :cl-ppcre)
 (ql:quickload :alexandria)
 (ql:quickload :zpng)
 
 (set-prefix-key (kbd "C-z"))
-;; Message window font
-(set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
-(clear-window-placement-rules)
+;;(set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
+;;(set-font "Source Code Pro 20")
+;;(clear-window-placement-rules)
 
 (load-module "mpd")
 (load-module "notifications")
@@ -50,3 +49,7 @@
 (miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
                              ("xterm" "xterm")))
 (stumptray:add-mode-line-hooks)
+(setf *input-window-gravity* :top)
+(setf *message-window-padding* 10)
+(set-msg-border-width 2)
+(set-border-color "#2aa198")
