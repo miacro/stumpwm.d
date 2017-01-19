@@ -1,6 +1,7 @@
 SOURCE_DIR=`pwd`
 TARGET_DIR=${HOME}/.stumpwm.d
 MAKE=make --no-print-directory
+SHELL=/bin/bash
 
 reinstall:
 	@  ${MAKE} uninstall \
