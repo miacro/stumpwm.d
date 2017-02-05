@@ -13,7 +13,8 @@ if [[ -d ${cache_stumpwm_dir}/.git ]]
 then
   cd ${cache_stumpwm_dir} && git pull
 else
-  git clone https://github.com/stumpwm/stumpwm ${cache_stumpwm_dir}
+  git clone https://github.com/stumpwm/stumpwm ${cache_stumpwm_dir} \
+  || exit
 fi
 
 cd ${cache_stumpwm_dir}
