@@ -12,7 +12,6 @@
 
 (set-prefix-key (kbd "C-z"))
 ;;(set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
-;;(set-font "Source Code Pro 20")
 ;;(clear-window-placement-rules)
 
 (load-module "mpd")
@@ -24,6 +23,9 @@
 (load-module "net")
 (load-module "screenshot")
 (load-module "stumptray")
+(load-module "ttf-fonts")
+;;(set-font "Source Code Pro 20")
+;;(set-font (make-instance 'xft:font :family "Microsoft Yahei" :subfamily "Regular" :size 13))
 (toggle-mode-line (current-screen)
                   (current-head))
 (setf *screen-mode-line-format*
