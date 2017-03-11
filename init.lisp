@@ -11,7 +11,6 @@
 (ql:quickload :zpng)
 
 (set-prefix-key (kbd "C-z"))
-;;(set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
 ;;(clear-window-placement-rules)
 
 (load-module "mpd")
@@ -25,12 +24,13 @@
 (load-module "stumptray")
 (load-module "ttf-fonts")
 ;;(set-font "Source Code Pro 20")
-;;(set-font (make-instance 'xft:font :family "Microsoft Yahei" :subfamily "Regular" :size 13))
+;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
+(set-font (make-instance 'xft:font :family "Consolas" :subfamily "Regular" :size 13))
 (toggle-mode-line (current-screen)
                   (current-head))
 (setf *screen-mode-line-format*
-      (list " %w | %c | %M | " 
-            '(:eval (run-shell-command "date" t))))
+      (list " %v | %c | %M | %g | %d"))
+(setf *window-format* "%n %s %c %m")
 
 ;;(setf *debug-level* 1)
 ;;(redirect-all-output (data-dir-file "debug-output" "txt"))
