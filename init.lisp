@@ -53,5 +53,6 @@
 (stumptray:add-mode-line-hooks)
 (setf *input-window-gravity* :top)
 (setf *message-window-padding* 10)
+(setf *mouse-focus-policy* :sloppy)
 (set-msg-border-width 2)
 (set-border-color "#2aa198")
