@@ -49,6 +49,6 @@ prepare-repo:
   && cd ${REPO_DIR} \
   && git pull \
   && cd - \
-  || git clone REPO_URL ${REPO_DIR}
+  || git clone ${REPO_URL} ${REPO_DIR}
 
 .PHONY: relink unlink link prepare-libs prepare-repo install install-contrib
