@@ -4,8 +4,7 @@ SHELL=/bin/bash
 SOURCE_DIR=`pwd`
 TARGET_DIR=${HOME}/.stumpwm.d
 CACHE_DIR=${TARGET_DIR}/.cache
-MODULES_DIR=${TARGET_DIR}/modules
-CONTRIB_DIR=${MODULES_DIR}/stumpwm-contrib
+MODULE_DIR=${TARGET_DIR}/modules
 REPO_URL=
 REPO_DIR=
 
@@ -28,15 +27,15 @@ install:
 	&& make prepare-repo REPO_URL=https://github.com/stumpwm/stumpwm REPO_DIR=${CACHE_DIR}/stumpwm \
   && cd ${CACHE_DIR}/stumpwm \
   && autoconf \
-  && ./configure --prefix=${TARGET_DIR} --with-module-dir=${MODULES_DIR} \
+  && ./configure --prefix=${TARGET_DIR} --with-module-dir=${MODULE_DIR} \
   && make \
   && make install \
   && cd - \
   && make install-contrib
 
 install-contrib:
-	@  mkdir -p ${MODULES_DIR} \
-  && make prepare-repo REPO_URL=https://github.com/stumpwm/stumpwm-contrib.git REPO_DIR=${CONTRIB_DIR}
+	@  mkdir -p ${MODULE_DIR} \
+  && make prepare-repo REPO_URL=https://github.com/stumpwm/stumpwm-contrib.git REPO_DIR=${MODULE_DIR}/stumpwm-contrib
 
 prepare-libs:
 	sbcl --eval "(ql:quickload :clx)" --quit \
