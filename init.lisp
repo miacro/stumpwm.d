@@ -25,7 +25,7 @@
 (load-module "ttf-fonts")
 ;;(set-font "Source Code Pro 20")
 ;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
-(set-font (make-instance 'xft:font :family "Consolas" :subfamily "Regular" :size 13))
+(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
 (toggle-mode-line (current-screen)
                   (current-head))
 (setf *screen-mode-line-format*
