@@ -10,7 +10,7 @@
 (ql:quickload :alexandria)
 (ql:quickload :zpng)
 
-(set-prefix-key (kbd "C-z"))
+;;(set-prefix-key (kbd "C-z"))
 ;;(clear-window-placement-rules)
 
 (load-module "mpd")
@@ -25,7 +25,7 @@
 (load-module "ttf-fonts")
 ;;(set-font "Source Code Pro 20")
 ;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
-(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
+;;(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
 (toggle-mode-line (current-screen)
                   (current-head))
 (setf *screen-mode-line-format*
@@ -45,9 +45,9 @@
 (run-with-timer 0 3600 #'(lambda () 
                            (miacro-theme:display-background 
                              (miacro-theme:select-random-background "~/pictures"))))
-(grename "chrome")
+(grename "default")
 (gnewbg "emacs")
-(gnewbg "rtorrent")
+(gnewbg "chrome")
 (miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
                              ("xterm" "xterm")))
 (stumptray:add-mode-line-hooks)
