@@ -39,7 +39,7 @@
   (echo (format nil "~A ~A ~A ~A" 
                 mode-line button x y
                 )))
-(add-hook *mode-line-click-hook* 'my-popup)
+;;(add-hook *mode-line-click-hook* 'my-popup)
 (load-module "miacro-theme")
 (load-module "miacro-app-menu")
 (run-with-timer 0 3600 #'(lambda () 
@@ -48,6 +48,12 @@
 (grename "default")
 (gnewbg "emacs")
 (gnewbg "chrome")
+(gnewbg "[4]")
+(gnewbg "[5]")
+(gnewbg "[6]")
+(gnewbg "[7]")
+(gnewbg "[8]")
+(gnewbg "[9]")
 (miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
                              ("xterm" "xterm")))
 (stumptray:add-mode-line-hooks)
