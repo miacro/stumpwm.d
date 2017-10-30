@@ -96,4 +96,4 @@
 
 (define-key *root-map* (kbd "m") "show-menu")
 
-(setf app-menu::*app-menu* '(("chrome" . "google-stable-chrome") ("firefox" . "firefox")))
+(setf app-menu::*app-menu* '(("chrome" . "google-chrome-stable") ("firefox" . "firefox")))
