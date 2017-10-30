@@ -22,7 +22,7 @@ unlink:
   && rm ${TARGET_DIR} \
   || exit 0
 
-install:
+install-stumpwm:
 	make prepare-libs \
 	&& make prepare-repo REPO_URL=https://github.com/stumpwm/stumpwm REPO_DIR=${CACHE_DIR}/stumpwm \
   && cd ${CACHE_DIR}/stumpwm \
@@ -51,4 +51,4 @@ prepare-repo:
   && cd - \
   || git clone ${REPO_URL} ${REPO_DIR}
 
-.PHONY: relink unlink link prepare-libs prepare-repo install install-contrib
+.PHONY: relink unlink link prepare-libs prepare-repo install-stumpwm install-contrib

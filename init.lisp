@@ -10,6 +10,13 @@
 (ql:quickload :alexandria)
 (ql:quickload :zpng)
 
+(defun add-to-load-path-recursive (path)
+  (dolist (module-path (stumpwm::build-load-path path)) 
+    (stumpwm:add-to-load-path module-path)))
+
+(add-to-load-path-recursive "~/.stumpwm.d/stumpwm-contrib")
+(add-to-load-path-recursive "~/.stumpwm.d/modules")
+
 ;;(set-prefix-key (kbd "C-z"))
 ;;(clear-window-placement-rules)
 

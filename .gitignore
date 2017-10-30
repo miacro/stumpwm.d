@@ -109,6 +109,8 @@ cmake_install.cmake
 install_manifest.txt
 
 /bin
+/stumpwm-contrib
+/stumpwm-contrib.git
 /modules/stumpwm-contrib
 /modules/stumpwm-contrib.git
 /share
