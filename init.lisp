@@ -33,8 +33,6 @@
 ;;(set-font "Source Code Pro 20")
 ;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
 ;;(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
-(toggle-mode-line (current-screen)
-                  (current-head))
 (setf *window-format* "%n %s %c %m")
 
 ;;(setf *debug-level* 1)
@@ -64,12 +62,15 @@
 (stumptray:add-mode-line-hooks)
 (setf *input-window-gravity* :top)
 (setf *message-window-padding* 10)
+(setf *message-window-gravity* :bottom-right)
 (setf *mouse-focus-policy* :sloppy)
+(setf *input-window-gravity* :center)
 (set-msg-border-width 2)
 (set-border-color "#2aa198")
 
 ;;(setf *screen-mode-line-format*
 ;;      (list " %v | %c | %M | %g | %d"))
+(setf *mode-line-timeout* 1)
 (setf stumpwm:*screen-mode-line-format*
   (list
     "^B[^b%n^B]^b "
@@ -99,3 +100,5 @@
       "date +'^B%Y-%m-%d ^6*%H:%M:%S ^n^b'" t)))
     "^B««^b "
     ""))
+(toggle-mode-line (current-screen)
+                  (current-head))
