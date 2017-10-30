@@ -9,9 +9,9 @@
 ;;; The following lines added by ql:add-to-init-file:
 
 
-(setf *mode-line-separator* "^B««^b")
-(setf *mode-line-separator-start* "^[^7^B[^]")
-(setf *mode-line-separator-end* "^[^7^B]^]")
+(setf *mode-line-separator* "^[^B««^]")
+(setf *mode-line-separator-start* "^[^7*^B[^]")
+(setf *mode-line-separator-end* "^[^7*^B]^]")
 
 (defun mode-line-separator-start ()
   *mode-line-separator-start*)

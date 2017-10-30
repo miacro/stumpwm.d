@@ -74,15 +74,15 @@
 (setf stumpwm:*screen-mode-line-format*
   (list
     (miacro-theme:mode-line-unit "%n")
-    "^7*^B%W^b^n"
+    "^[^7*^B%W^]"
     "^>" ; right align
     (miacro-theme:mode-line-unit "%h")
-    (miacro-theme:mode-line-unit "^5*^B%c%M^b^n")
-    (miacro-theme:mode-line-unit "^B^5%l^n^b")
+    (miacro-theme:mode-line-unit "^[^5*^B%c%M^]")
+    (miacro-theme:mode-line-unit "^[^5*^B%l^]")
     (miacro-theme:mode-line-separator-start)
     '(:eval (string-right-trim '(#\Newline) 
               (run-shell-command
-                "date +'^B%Y-%m-%d ^6*%H:%M:%S ^n^b'" t)))
+                "date +'^[^B%Y-%m-%d ^6*%H:%M:%S^]'" t)))
     (miacro-theme:mode-line-separator-end)
     "  "))
 
