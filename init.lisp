@@ -85,7 +85,7 @@
               (run-shell-command
                 "date +'^[^B%Y-%m-%d ^6*%H:%M:%S^]'" t)))
     (miacro-theme:mode-line-separator-end)
-    "  "))
+    "   "))
 
 (toggle-mode-line (current-screen) (current-head))
 
