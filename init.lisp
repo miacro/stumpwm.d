@@ -65,7 +65,7 @@
 (setf *message-window-padding* 10)
 (setf *message-window-gravity* :bottom-right)
 (setf *mouse-focus-policy* :sloppy)
-(setf *input-window-gravity* :center)
+(setf *input-window-gravity* :bottom)
 (set-msg-border-width 2)
 (set-border-color "#2aa198")
 
@@ -94,4 +94,6 @@
 (if (probe-file user-menu-file)
   (app-menu:load-menu-file user-menu-file))
 
-(define-key stumpwm:*root-map* (stumpwm:kbd "m") "show-menu")
+(define-key *root-map* (kbd "m") "show-menu")
+
+(setf app-menu::*app-menu* '(("chrome" . "google-stable-chrome") ("firefox" . "firefox")))
