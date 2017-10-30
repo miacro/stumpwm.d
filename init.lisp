@@ -73,32 +73,17 @@
 (setf *mode-line-timeout* 1)
 (setf stumpwm:*screen-mode-line-format*
   (list
-    "^B[^b%n^B]^b "
-    "^7*^B%W^b^n "
-    ;; "[^B%n^b] " ; group num
-    ;; "%B" ; battery
-    ;; "[%h] "
-    ;; "[^B%g^b] " ;groups
-    ;; "^B%w^b" ; window list
-    ;; notifications
-    ;; "%Z "
-    ;; TODO add google reader unread
-    ;; TODO add linphone status/incoming calls
-    ;; TODO add irc alert
-    ;; TOOD add current todo (from emacs/org, clocked in item)
+    (miacro-theme:mode-line-unit "%n")
+    "^7*^B%W^b^n"
     "^>" ; right align
-    "^B «« ^b"
-    "%h"
-    "^B «« ^b"
-    "^5*^B%c%M^b^n" ; cpu
-    "^B «« ^b"
-    "^B^5%l^n^b" ; net
-    "^B «« ^b "
-    '(:eval (string-right-trim '(#\Newline) (run-shell-command
-    ;; "date +'%a %m-%d ^6*^B%l:%M^b^n %p'|tr -d '\\n'"
-    ;;  uses date command so time can be bold
-      "date +'^B%Y-%m-%d ^6*%H:%M:%S ^n^b'" t)))
-    "^B««^b "
-    ""))
-(toggle-mode-line (current-screen)
-                  (current-head))
+    (miacro-theme:mode-line-unit "%h")
+    (miacro-theme:mode-line-unit "^5*^B%c%M^b^n")
+    (miacro-theme:mode-line-unit "^B^5%l^n^b")
+    (miacro-theme:mode-line-separator-start)
+    '(:eval (string-right-trim '(#\Newline) 
+              (run-shell-command
+                "date +'^B%Y-%m-%d ^6*%H:%M:%S ^n^b'" t)))
+    (miacro-theme:mode-line-separator-end)
+    "  "))
+
+(toggle-mode-line (current-screen) (current-head))
