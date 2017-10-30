@@ -28,8 +28,6 @@
 ;;(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
 (toggle-mode-line (current-screen)
                   (current-head))
-(setf *screen-mode-line-format*
-      (list " %v | %c | %M | %g | %d"))
 (setf *window-format* "%n %s %c %m")
 
 ;;(setf *debug-level* 1)
@@ -45,15 +43,15 @@
 (run-with-timer 0 3600 #'(lambda () 
                            (miacro-theme:display-background 
                              (miacro-theme:select-random-background "~/pictures"))))
-(grename "default")
-(gnewbg "emacs")
-(gnewbg "chrome")
-(gnewbg "[4]")
-(gnewbg "[5]")
-(gnewbg "[6]")
-(gnewbg "[7]")
-(gnewbg "[8]")
-(gnewbg "[9]")
+(grename "1")
+(gnewbg "2")
+(gnewbg "3")
+(gnewbg "4")
+(gnewbg "5")
+(gnewbg "6")
+(gnewbg "7")
+(gnewbg "8")
+(gnewbg "9")
 (miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
                              ("xterm" "xterm")))
 (stumptray:add-mode-line-hooks)
@@ -62,3 +60,35 @@
 (setf *mouse-focus-policy* :sloppy)
 (set-msg-border-width 2)
 (set-border-color "#2aa198")
+
+;;(setf *screen-mode-line-format*
+;;      (list " %v | %c | %M | %g | %d"))
+(setf stumpwm:*screen-mode-line-format*
+  (list
+    "^B[^b%n^B]^b "
+    "^7*^B%W^b^n "
+    ;; "[^B%n^b] " ; group num
+    ;; "%B" ; battery
+    ;; "[%h] "
+    ;; "[^B%g^b] " ;groups
+    ;; "^B%w^b" ; window list
+    ;; notifications
+    ;; "%Z "
+    ;; TODO add google reader unread
+    ;; TODO add linphone status/incoming calls
+    ;; TODO add irc alert
+    ;; TOOD add current todo (from emacs/org, clocked in item)
+    "^>" ; right align
+    "^B «« ^b"
+    "%h"
+    "^B «« ^b"
+    "^5*^B%c%M^b^n" ; cpu
+    "^B «« ^b"
+    "^B^5%l^n^b" ; net
+    "^B «« ^b "
+    '(:eval (string-right-trim '(#\Newline) (run-shell-command
+    ;; "date +'%a %m-%d ^6*^B%l:%M^b^n %p'|tr -d '\\n'"
+    ;;  uses date command so time can be bold
+      "date +'^B%Y-%m-%d ^6*%H:%M:%S ^n^b'" t)))
+    "^B««^b "
+    ""))
