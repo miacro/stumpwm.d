@@ -102,7 +102,8 @@ as menu items must be strings.")
   (setf *entry-list* (append *entry-list* (list entry))))
 
 (defmethod add-to-entry-list ((entry pathname))
-  (add-to-entry-list (get-entry-from-desktop-file entry)))
+  (let ((entry (get-entry-from-desktop-file entry)))
+    (when entry (add-to-entry-list entry))))
 
 (defun init-entry-list (&optional (paths *entry-paths*))
   (setf *entry-list* nil)
@@ -124,8 +125,3 @@ as menu items must be strings.")
       for category in categories
       when (entry-in-catetory entry category)
       collect (name entry))))
-
-(setf *entry* (get-entry-from-desktop-file #P"/usr/share/applications/google-chrome.desktop"))
-(add-to-entry-list *entry*)
-(add-to-entry-list #P"/usr/share/applications/google-chrome.desktop")
-(init-entry-list)
