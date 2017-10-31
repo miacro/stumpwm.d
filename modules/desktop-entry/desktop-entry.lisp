@@ -5,7 +5,11 @@
 ;;; "app-menu" goes here. Hacks and glory await!
 (export '(show-menu load-menu-file))
 
-(defvar *app-menu* nil "Where the menu structure is held")
+(defvar *app-menu* '() 
+  "*app-menu* can be a list of values or an alist. If it's an alist, 
+the CAR of each element is displayed in the menu. What is displayed 
+as menu items must be strings.")
+
 (defvar *main-categories* 
   '("AudioVideo"
     "Audio"
@@ -21,6 +25,10 @@
     "Utility"
     "Others"))
 (defvar *main-scetion* "Desktop Entry")
+(defvar *entry-paths* 
+  '(#P"/usr/share/applications"
+    #P"~/.local/share/applications"))
+(defvar *entry-list* '())
 
 ;;"reference: https://developer.gnome.org/desktop-entry-spec/"
 (defclass desktop-entry ()
@@ -55,6 +63,8 @@
             (terminal (get-option config "Terminal" :boolean)))
       (when (string= name "") (setf name nil))
       (when (string= exec "") (setf exec nil))
+      (when (and (stringp categories) (> (length categories) 0))
+        (setf categories (split-string categories ";")))
       (if (and name exec)
         (with-accessors ((entry-name name) 
                          (entry-exec exec)
@@ -68,6 +78,11 @@
           entry)
         nil))))
 
+(defun get-entry-from-desktop-file (filename)
+  (let* ((entry (make-instance 'desktop-entry :name nil :exec nil))i
+         (entry (init-entry entry filename)))
+    entry))
+
 (defun list-entry-files (path)
     (remove-if-not (lambda (file)
                       (search "desktop"
@@ -80,16 +95,37 @@
       (read-sequence data stream)
       data)))
 
-(defun load-entry-config (filename)
-  (let ((config (py-configparser:make-config)))
-    (py-configparser:read-files config (list filename))
-    config))
+(defgeneric add-to-entry-list (entry)
+  (:documentation "add an entry to *entry-list*"))
 
-(setf *testfile*  
-    (load-entry-config "/usr/share/applications/google-chrome.desktop"))
+(defmethod add-to-entry-list ((entry desktop-entry))
+  (setf *entry-list* (append *entry-list* (list entry))))
 
-(setf *entry-files* 
-  (list-entry-files "/usr/share/applications/"))
+(defmethod add-to-entry-list ((entry pathname))
+  (add-to-entry-list (get-entry-from-desktop-file entry)))
 
-(setf *entry* (make-instance 'desktop-entry :name "empyt-name" :exec "empty-exec"))
-(init-entry *entry* #P"/usr/share/applications/google-chrome.desktop")
+(defun init-entry-list (&optional (paths *entry-paths*))
+  (setf *entry-list* nil)
+  (dolist (entry-path paths)
+    (dolist (entry-file (list-entry-files entry-path))
+      (add-to-entry-list entry-file))))
+
+(defun get-menu-by-categories (categories)
+  (when (stringp categories) 
+    (setf categories (split-string categories ";")))
+  (flet (
+    (entry-in-catetory (entry category)
+      (dolist (entry-category (categories entry))
+        (when (string= entry-category category)
+          (return T))
+        nil)))
+      
+    (loop for entry in *entry-list*
+      for category in categories
+      when (entry-in-catetory entry category)
+      collect (name entry))))
+
+(setf *entry* (get-entry-from-desktop-file #P"/usr/share/applications/google-chrome.desktop"))
+(add-to-entry-list *entry*)
+(add-to-entry-list #P"/usr/share/applications/google-chrome.desktop")
+(init-entry-list)
