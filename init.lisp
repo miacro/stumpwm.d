@@ -9,6 +9,7 @@
 (ql:quickload :cl-ppcre)
 (ql:quickload :alexandria)
 (ql:quickload :zpng)
+(ql:quickload :py-configparser)
 
 (defun add-to-load-path-recursive (path)
   (dolist (module-path (stumpwm::build-load-path path)) 
@@ -30,14 +31,13 @@
 (load-module "screenshot")
 (load-module "stumptray")
 (load-module "ttf-fonts")
-(load-module "app-menu")
 ;;(set-font "Source Code Pro 20")
 ;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
 ;;(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
 (setf *window-format* "%n %s %c %m")
 
 ;;(setf *debug-level* 1)
-;;(redirect-all-output (data-dir-file "debug-output" "txt"))
+;;(redirect-all-output (data-dir-file ".debug/debug-output" "txt"))
 
 (defun my-popup (mode-line button x y) 
   (echo (format nil "~A ~A ~A ~A" 
@@ -45,7 +45,7 @@
                 )))
 ;;(add-hook *mode-line-click-hook* 'my-popup)
 (load-module "miacro-theme")
-(load-module "miacro-app-menu")
+(load-module "desktop-entry")
 (run-with-timer 0 3600 #'(lambda () 
                            (miacro-theme:display-background 
                              (miacro-theme:select-random-background "~/pictures"))))
@@ -58,8 +58,6 @@
 (gnewbg "7")
 (gnewbg "8")
 (gnewbg "9")
-(miacro-app-menu:init-menu '(("chrome" "google-chrome-stable")
-                             ("xterm" "xterm")))
 (stumptray:add-mode-line-hooks)
 (setf *input-window-gravity* :top)
 (setf *message-window-padding* 10)
@@ -89,11 +87,13 @@
 
 (toggle-mode-line (current-screen) (current-head))
 
-(app-menu:load-menu-file "~/.stumpwm.d/menurc")
-(setf user-menu-file "~/.stumpwm.d/.menurc")
-(if (probe-file user-menu-file)
-  (app-menu:load-menu-file user-menu-file))
+;;(desktop-entry:init-menu '(("chrome" "google-chrome-stable")
+;;                             ("xterm" "xterm")))
+;;(desktop-entry:load-menu-file "~/.stumpwm.d/menurc")
+;;(setf user-menu-file "~/.stumpwm.d/.menurc")
+;;(if (probe-file user-menu-file)
+;;  (desktop-entry:load-menu-file user-menu-file))
+;;
+;;(define-key *root-map* (kbd "m") "show-menu")
 
-(define-key *root-map* (kbd "m") "show-menu")
-
-(setf app-menu::*app-menu* '(("chrome" . "google-chrome-stable") ("firefox" . "firefox")))
+;;(setf desktop-entry::*app-menu* '(("chrome" . "google-chrome-stable") ("firefox" . "firefox")))

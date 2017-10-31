@@ -116,3 +116,4 @@ install_manifest.txt
 /share
 /.cache
 /.menurc
+/.debug
