@@ -5,11 +5,6 @@
 ;;; "app-menu" goes here. Hacks and glory await!
 (export '(show-menu load-menu-file))
 
-(defvar *app-menu* '() 
-  "*app-menu* can be a list of values or an alist. If it's an alist, 
-the CAR of each element is displayed in the menu. What is displayed 
-as menu items must be strings.")
-
 (defvar *main-categories* 
   '("AudioVideo"
     "Audio"
@@ -127,3 +122,15 @@ as menu items must be strings.")
             (when (entry-in-catetory entry category)
                (setf menu (cons (cons (name entry) index) menu)))))
       menu)))
+
+(defcommand show-menu () ()
+  "show the application menu"
+  (let ((category 
+          (select-from-menu (current-screen) *main-categories*)))
+    (let ((entry-index 
+            (cdr 
+              (select-from-menu 
+                (current-screen) 
+                (get-menu-by-categories category)))))
+      (when (numberp entry-index)
+        (run-shell-command (exec (nth entry-index *entry-list*)))))))

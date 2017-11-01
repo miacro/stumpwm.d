@@ -94,6 +94,8 @@
 ;;(if (probe-file user-menu-file)
 ;;  (desktop-entry:load-menu-file user-menu-file))
 ;;
-;;(define-key *root-map* (kbd "m") "show-menu")
 
 ;;(setf desktop-entry::*app-menu* '(("chrome" . "google-chrome-stable") ("firefox" . "firefox")))
+
+(desktop-entry::init-entry-list)
+(define-key *root-map* (kbd "m") "show-menu")
