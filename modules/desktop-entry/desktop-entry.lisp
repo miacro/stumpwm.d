@@ -19,7 +19,7 @@
     "System"
     "Utility"
     "Others"))
-(defvar *main-scetion* "Desktop Entry")
+(defvar *main-section* "Desktop Entry")
 (defvar *entry-paths* 
   '(#P"/usr/share/applications"
     #P"~/.local/share/applications"))
@@ -62,15 +62,17 @@
       :initform nil
       :accessor terminal)))
 
-(defgeneric init-entry (entry path)
+(defgeneric init-entry (entry path &optional &key main-section)
   (:documentation "init entry from a .desktop file"))
 
-(defmethod init-entry ((entry desktop-entry) (path pathname))
+(defmethod init-entry ((entry desktop-entry) 
+                       (path pathname) 
+                       &optional &key (main-section *main-section*))
   (flet 
     ((get-option (config entry-name &optional (type nil))
-      (if (py-configparser:has-option-p config *main-scetion* entry-name)
+      (if (py-configparser:has-option-p config main-section entry-name)
         (py-configparser:get-option 
-          config *main-scetion* entry-name :type type)
+          config main-section entry-name :type type)
         nil)))
     (let* ((config (py-configparser:read-files 
                       (py-configparser:make-config) (list path)))
@@ -109,16 +111,6 @@
           entry)
         nil))))
 
-(defgeneric command-line (entry)
-  (:documentation "get command line from an entry"))
-
-(defmethod command-line (entry)
-  (let ((exec-string (exec entry))
-        (path-string (path entry)))
-    (concatenate 'string path-string
-      (string-replace-all "%f|%F|%u|%U|%d|%D|%n|%N|%i|%c|%k|%v|%m" 
-        exec-string ""))))
-
 (defun get-entry-from-desktop-file (filename)
   (let* ((entry (make-instance 'desktop-entry :name nil :exec nil :entry-type nil))i
          (entry (init-entry entry filename)))
@@ -136,6 +128,16 @@
       (read-sequence data stream)
       data)))
 
+(defgeneric command-line (entry)
+  (:documentation "get command line from an entry"))
+
+(defmethod command-line (entry)
+  (let ((exec-string (exec entry))
+        (path-string (path entry)))
+    (concatenate 'string path-string
+      (string-replace-all "%f|%F|%u|%U|%d|%D|%n|%N|%i|%c|%k|%v|%m" 
+        exec-string ""))))
+
 (defgeneric add-to-entry-list (entry)
   (:documentation "add an entry to *entry-list*"))
 
@@ -146,13 +148,13 @@
   (let ((entry (get-entry-from-desktop-file entry)))
     (when entry (add-to-entry-list entry))))
 
-(defun init-entry-list (&optional (paths *entry-paths*))
+(defun init-entry-list (&optional (entry-paths *entry-paths*))
   (setf *entry-list* nil)
-  (dolist (entry-path paths)
+  (dolist (entry-path entry-paths)
     (dolist (entry-file (list-entry-files entry-path))
       (add-to-entry-list entry-file))))
 
-(defun get-menu-by-categories (categories)
+(defun get-menu-by-categories (categories &optional &key (entry-list *entry-list*))
   (when (stringp categories) 
     (setf categories (string-split ";" categories)))
   (flet (
@@ -162,8 +164,8 @@
           (return T))
         nil)))
     (let ((menu nil) (entry nil))
-      (loop for index from (- (length *entry-list*) 1) downto 0 by 1
-        do (setf entry (nth index *entry-list*))
+      (loop for index from (- (length entry-list) 1) downto 0 by 1
+        do (setf entry (nth index entry-list))
         when (and (not (no-display entry)) 
                   (not (only-show-in entry))
                   (or (string= "Application" (entry-type entry))

@@ -4,6 +4,7 @@
 (add-to-entry-list (get-entry-from-desktop-file #P"/usr/share/applications/google-chrome.desktop"))
 (add-to-entry-list #P"/usr/share/applications/google-chrome.desktop")
 (add-to-entry-list #P"/usr/share/applications/okularApplication_comicbook.desktop")
+(format t "entry count: ~S~%" (length *entry-list*))
 (format t "first entry: ~S~%" (categories (first *entry-list*)))
 (format t "second entry: ~S~%" (categories (second *entry-list*)))
 (format t "third entry: ~S~%" (no-display (third *entry-list*)))
