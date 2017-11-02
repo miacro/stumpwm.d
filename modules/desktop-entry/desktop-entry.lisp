@@ -25,6 +25,15 @@
     #P"~/.local/share/applications"))
 (defvar *entry-list* '())
 
+(defun string-split (regex target-string)
+  (cl-ppcre:split regex target-string))
+
+(defun string-replace-all (regex target-string replacement) 
+  (cl-ppcre:regex-replace-all regex target-string replacement))
+
+(defun list-directory (path)
+  (stumpwm:list-directory path))
+
 ;;"reference: https://developer.gnome.org/desktop-entry-spec/"
 (defclass desktop-entry ()
   (
@@ -76,9 +85,9 @@
       (when (string= name "") (setf name nil))
       (when (string= exec "") (setf exec nil))
       (when (and (stringp categories))
-        (setf categories (split-string categories ";")))
+        (setf categories (string-split ";" categories)))
       (when (and (stringp only-show-in))
-        (setf only-show-in (split-string only-show-in ";")))
+        (setf only-show-in (string-split ";" only-show-in)))
       (if (and name exec)
         (with-accessors ((entry-name name) 
                          (entry-entry-type entry-type)
@@ -100,6 +109,16 @@
           entry)
         nil))))
 
+(defgeneric command-line (entry)
+  (:documentation "get command line from an entry"))
+
+(defmethod command-line (entry)
+  (let ((exec-string (exec entry))
+        (path-string (path entry)))
+    (concatenate 'string path-string
+      (string-replace-all "%f|%F|%u|%U|%d|%D|%n|%N|%i|%c|%k|%v|%m" 
+        exec-string ""))))
+
 (defun get-entry-from-desktop-file (filename)
   (let* ((entry (make-instance 'desktop-entry :name nil :exec nil :entry-type nil))i
          (entry (init-entry entry filename)))
@@ -109,7 +128,7 @@
     (remove-if-not (lambda (file)
                       (search "desktop"
                         (file-namestring file)))
-                    (stumpwm:list-directory path)))
+                    (list-directory path)))
 
 (defun load-file-content (filename)
   (with-open-file (stream filename)
@@ -135,7 +154,7 @@
 
 (defun get-menu-by-categories (categories)
   (when (stringp categories) 
-    (setf categories (split-string categories ";")))
+    (setf categories (string-split ";" categories)))
   (flet (
     (entry-in-catetory (entry category)
       (dolist (entry-category (categories entry))
@@ -156,16 +175,15 @@
                  (setf menu (cons (cons (name entry) index) menu)))))
       menu)))
 
-(defcommand show-menu () ()
+(stumpwm:defcommand show-menu () ()
   "show the application menu"
   (let ((category 
-          (select-from-menu (current-screen) *main-categories*)))
+          (stumpwm:select-from-menu (stumpwm:current-screen) *main-categories*)))
     (let ((entry-index 
             (cdr 
-              (select-from-menu 
-                (current-screen) 
+              (stumpwm:select-from-menu 
+                (stumpwm:current-screen) 
                 (get-menu-by-categories category)))))
       (when (numberp entry-index)
-        (run-shell-command (concatenate 'string
-                              (path (nth entry-index *entry-list*))
-                              (exec (nth entry-index *entry-list*))))))))
+        (stumpwm:run-shell-command 
+          (command-line (nth entry-index *entry-list*)))))))
