@@ -37,6 +37,9 @@
    (exec :initarg :exec 
       :initform (error "Must supply a exec command")
       :accessor exec)
+   (path :initarg :path
+      :initform nil
+      :accessor path)
    (categories :initarg :categories 
       :initform '()
       :accessor categories)
@@ -65,6 +68,7 @@
             (name (get-option config "Name"))
             (entry-type (get-option config "Type"))
             (exec (get-option config "Exec"))
+            (path (get-option config "Path"))
             (categories (get-option config "Categories"))
             (no-display (get-option config "NoDisplay" :boolean))
             (only-show-in (get-option config "OnlyShowIn"))
@@ -79,6 +83,7 @@
         (with-accessors ((entry-name name) 
                          (entry-entry-type entry-type)
                          (entry-exec exec)
+                         (entry-path path)
                          (entry-categories categories)
                          (entry-no-display no-display)
                          (entry-only-show-in only-show-in)
@@ -87,6 +92,7 @@
           (setf entry-name name)
           (setf entry-entry-type entry-type)
           (setf entry-exec exec)
+          (setf entry-path path)
           (setf entry-categories categories)
           (setf entry-no-display no-display)
           (setf entry-only-show-in only-show-in)
@@ -160,4 +166,6 @@
                 (current-screen) 
                 (get-menu-by-categories category)))))
       (when (numberp entry-index)
-        (run-shell-command (exec (nth entry-index *entry-list*)))))))
+        (run-shell-command (concatenate 'string
+                              (path (nth entry-index *entry-list*))
+                              (exec (nth entry-index *entry-list*))))))))
