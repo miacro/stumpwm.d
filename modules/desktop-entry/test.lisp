@@ -16,3 +16,6 @@
 (format t "menu: ~S~%" *menu*)
 (setf *menu* (get-menu-by-categories "Qt"))
 (format t "menu: ~S~%" *menu*)
+
+(setf *menu* (build-menu))
+(format t "menu: ~S~%" *menu*)

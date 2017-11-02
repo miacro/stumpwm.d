@@ -177,15 +177,32 @@
                  (setf menu (cons (cons (name entry) index) menu)))))
       menu)))
 
+(defun build-menu (&optional (categories nil)
+                   &key 
+                   (entry-list *entry-list*) 
+                   (main-categories *main-categories*))
+  (if categories
+    (append (get-menu-by-categories categories :entry-list entry-list) 
+            (list '(".." . :up)))
+    (append (loop for category in main-categories
+              collect (cons category category))
+            (list '(".." . nil)))))
+
 (stumpwm:defcommand show-menu () ()
   "show the application menu"
-  (let ((category 
-          (stumpwm:select-from-menu (stumpwm:current-screen) *main-categories*)))
-    (let ((entry-index 
-            (cdr 
-              (stumpwm:select-from-menu 
-                (stumpwm:current-screen) 
-                (get-menu-by-categories category)))))
-      (when (numberp entry-index)
-        (stumpwm:run-shell-command 
-          (command-line (nth entry-index *entry-list*)))))))
+  (let ((stack-categories nil))
+    (loop
+      (let ((entry-index 
+              (cdr (stumpwm:select-from-menu 
+                      (stumpwm:current-screen) 
+                      (build-menu (reverse stack-categories))))))
+        (cond 
+          ((not entry-index) (return))
+          ((numberp entry-index)
+                (stumpwm:run-shell-command 
+                  (command-line 
+                    (nth entry-index *entry-list*))) (return))
+          ((stringp entry-index)
+            (push entry-index stack-categories))
+          ((eq entry-index :up)
+            (pop stack-categories)))))))
