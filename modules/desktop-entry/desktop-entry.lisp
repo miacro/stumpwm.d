@@ -183,7 +183,7 @@
                    (main-categories *main-categories*))
   (if categories
     (append (get-menu-by-categories categories :entry-list entry-list) 
-            (list '(".." . :up)))
+            (list '(".." . :up) '("...." . nil)))
     (append (loop for category in main-categories
               collect (cons category category))
             (list '(".." . nil)))))
