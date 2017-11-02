@@ -39,6 +39,9 @@
    (no-display :initarg :no-display
       :initform nil
       :accessor no-display)
+   (only-show-in :initarg :only-show-in
+      :initform nil
+      :accessor only-show-in)
    (terminal :initarg :terminal 
       :initform nil
       :accessor terminal)))
@@ -59,22 +62,27 @@
             (exec (get-option config "Exec"))
             (categories (get-option config "Categories"))
             (no-display (get-option config "NoDisplay" :boolean))
+            (only-show-in (get-option config "OnlyShowIn"))
             (terminal (get-option config "Terminal" :boolean)))
       (when (string= name "") (setf name nil))
       (when (string= exec "") (setf exec nil))
       (when (and (stringp categories))
         (setf categories (split-string categories ";")))
+      (when (and (stringp only-show-in))
+        (setf only-show-in (split-string only-show-in ";")))
       (if (and name exec)
         (with-accessors ((entry-name name) 
                          (entry-exec exec)
                          (entry-categories categories)
                          (entry-no-display no-display)
+                         (entry-only-show-in only-show-in)
                          (entry-terminal terminal)) 
           entry
           (setf entry-name name)
           (setf entry-exec exec)
           (setf entry-categories categories)
           (setf entry-no-display no-display)
+          (setf entry-only-show-in only-show-in)
           (setf entry-terminal terminal)
           entry)
         nil))))
@@ -124,7 +132,7 @@
     (let ((menu nil) (entry nil))
       (loop for index from (- (length *entry-list*) 1) downto 0 by 1
         do (setf entry (nth index *entry-list*))
-        when (not (no-display entry))
+        when (and (not (no-display entry)) (not (only-show-in entry)))
           do (dolist (category categories)
               (when (entry-in-catetory entry category)
                  (setf menu (cons (cons (name entry) index) menu)))))
