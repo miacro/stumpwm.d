@@ -27,7 +27,11 @@
 
 ;;"reference: https://developer.gnome.org/desktop-entry-spec/"
 (defclass desktop-entry ()
-  ((name :initarg :name 
+  (
+   (entry-type :initarg :entry-type
+      :initform (error "Must supply a entry type")
+      :accessor entry-type)
+   (name :initarg :name 
       :initform (error "Must supply a entry name")
       :accessor name)
    (exec :initarg :exec 
@@ -59,6 +63,7 @@
     (let* ((config (py-configparser:read-files 
                       (py-configparser:make-config) (list path)))
             (name (get-option config "Name"))
+            (entry-type (get-option config "Type"))
             (exec (get-option config "Exec"))
             (categories (get-option config "Categories"))
             (no-display (get-option config "NoDisplay" :boolean))
@@ -72,6 +77,7 @@
         (setf only-show-in (split-string only-show-in ";")))
       (if (and name exec)
         (with-accessors ((entry-name name) 
+                         (entry-entry-type entry-type)
                          (entry-exec exec)
                          (entry-categories categories)
                          (entry-no-display no-display)
@@ -79,6 +85,7 @@
                          (entry-terminal terminal)) 
           entry
           (setf entry-name name)
+          (setf entry-entry-type entry-type)
           (setf entry-exec exec)
           (setf entry-categories categories)
           (setf entry-no-display no-display)
@@ -88,7 +95,7 @@
         nil))))
 
 (defun get-entry-from-desktop-file (filename)
-  (let* ((entry (make-instance 'desktop-entry :name nil :exec nil))i
+  (let* ((entry (make-instance 'desktop-entry :name nil :exec nil :entry-type nil))i
          (entry (init-entry entry filename)))
     entry))
 
@@ -132,7 +139,12 @@
     (let ((menu nil) (entry nil))
       (loop for index from (- (length *entry-list*) 1) downto 0 by 1
         do (setf entry (nth index *entry-list*))
-        when (and (not (no-display entry)) (not (only-show-in entry)))
+        when (and (not (no-display entry)) 
+                  (not (only-show-in entry))
+                  (or (string= "Application" (entry-type entry))
+                      ;;(string= "Directory" (entry-type entry))
+                      ;;(string= "Link" (entry-type entry))
+                  ))
           do (dolist (category categories)
               (when (entry-in-catetory entry category)
                  (setf menu (cons (cons (name entry) index) menu)))))
