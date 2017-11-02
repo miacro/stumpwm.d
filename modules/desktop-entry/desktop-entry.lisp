@@ -36,6 +36,9 @@
    (categories :initarg :categories 
       :initform '()
       :accessor categories)
+   (no-display :initarg :no-display
+      :initform nil
+      :accessor no-display)
    (terminal :initarg :terminal 
       :initform nil
       :accessor terminal)))
@@ -55,6 +58,7 @@
             (name (get-option config "Name"))
             (exec (get-option config "Exec"))
             (categories (get-option config "Categories"))
+            (no-display (get-option config "NoDisplay" :boolean))
             (terminal (get-option config "Terminal" :boolean)))
       (when (string= name "") (setf name nil))
       (when (string= exec "") (setf exec nil))
@@ -64,11 +68,13 @@
         (with-accessors ((entry-name name) 
                          (entry-exec exec)
                          (entry-categories categories)
+                         (entry-no-display no-display)
                          (entry-terminal terminal)) 
           entry
           (setf entry-name name)
           (setf entry-exec exec)
           (setf entry-categories categories)
+          (setf entry-no-display no-display)
           (setf entry-terminal terminal)
           entry)
         nil))))
@@ -118,9 +124,10 @@
     (let ((menu nil) (entry nil))
       (loop for index from (- (length *entry-list*) 1) downto 0 by 1
         do (setf entry (nth index *entry-list*))
-        do (dolist (category categories)
-            (when (entry-in-catetory entry category)
-               (setf menu (cons (cons (name entry) index) menu)))))
+        when (not (no-display entry))
+          do (dolist (category categories)
+              (when (entry-in-catetory entry category)
+                 (setf menu (cons (cons (name entry) index) menu)))))
       menu)))
 
 (defcommand show-menu () ()
