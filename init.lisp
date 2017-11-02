@@ -99,3 +99,5 @@
 
 (desktop-entry::init-entry-list)
 (define-key *root-map* (kbd "m") "show-menu")
+(desktop-entry::set-entry-favorite "Google Chrome")
+(desktop-entry::set-entry-favorite "GNU Emacs")

@@ -19,3 +19,12 @@
 
 (setf *menu* (build-menu))
 (format t "menu: ~S~%" *menu*)
+
+(add-category (first *entry-list*) *favorite-category*)
+(format t "favorite categories: ~A~%" (categories (first *entry-list*)))
+(add-category (first *entry-list*) *favorite-category*)
+(format t "favorite categories: ~A~%" (categories (first *entry-list*)))
+(add-category (third *entry-list*) *favorite-category*)
+(set-entry-favorite "Google Chrome")
+(setf *menu* (build-menu *favorite-category*))
+(format t "menu: ~S~%" *menu*)

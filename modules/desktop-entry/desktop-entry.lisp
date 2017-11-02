@@ -5,8 +5,11 @@
 ;;; "app-menu" goes here. Hacks and glory await!
 (export '(show-menu load-menu-file))
 
+(defvar *favorite-category* "Favorite")
 (defvar *main-categories* 
-  '("AudioVideo"
+  (list 
+    *favorite-category*
+    "AudioVideo"
     "Audio"
     "Video"
     "Development"
@@ -36,8 +39,7 @@
 
 ;;"reference: https://developer.gnome.org/desktop-entry-spec/"
 (defclass desktop-entry ()
-  (
-   (entry-type :initarg :entry-type
+  ((entry-type :initarg :entry-type
       :initform (error "Must supply a entry type")
       :accessor entry-type)
    (name :initarg :name 
@@ -137,6 +139,27 @@
     (concatenate 'string path-string
       (string-replace-all "%f|%F|%u|%U|%d|%D|%n|%N|%i|%c|%k|%v|%m" 
         exec-string ""))))
+
+(defgeneric add-category (entry category)
+  (:documentation "add a category to an entry"))
+
+(defmethod add-category ((entry desktop-entry) (category string))
+  (with-accessors ((categories categories)) entry
+    (when 
+      (not (position category categories :test #'string=))
+      (setf categories (cons category categories)))))
+
+(defgeneric set-entry-favorite (entry &optional &key entry-list favorite-category)
+  (:documentation "add entry as favorite"))
+
+(defmethod set-entry-favorite ((entry-name string) 
+                               &optional &key 
+                               (entry-list *entry-list*)
+                               (favorite-category *favorite-category*))
+  (let ((entry-index (position entry-name entry-list 
+                        :test (lambda (name entry) (string= name (name entry))))))
+    (when entry-index 
+      (add-category (nth entry-index entry-list) favorite-category))))
 
 (defgeneric add-to-entry-list (entry)
   (:documentation "add an entry to *entry-list*"))
