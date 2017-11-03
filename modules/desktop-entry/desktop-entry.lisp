@@ -213,12 +213,13 @@
 
 (stumpwm:defcommand show-menu () ()
   "show the application menu"
-  (let ((stack-categories nil))
+  (let ((stack-categories nil) (prompt "Categories:"))
     (loop
       (let ((entry-index 
               (cdr (stumpwm:select-from-menu 
                       (stumpwm:current-screen) 
-                      (build-menu (reverse stack-categories))))))
+                      (build-menu (reverse stack-categories))
+                      prompt))))
         (cond 
           ((not entry-index) (return))
           ((numberp entry-index)
@@ -226,6 +227,8 @@
                   (command-line 
                     (nth entry-index *entry-list*))) (return))
           ((stringp entry-index)
-            (push entry-index stack-categories))
+            (push entry-index stack-categories) 
+            (setf prompt "Applications:"))
           ((eq entry-index :up)
-            (pop stack-categories)))))))
+            (pop stack-categories) 
+            (setf prompt "Categories:")))))))
