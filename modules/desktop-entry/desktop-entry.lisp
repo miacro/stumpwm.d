@@ -208,12 +208,12 @@
     (append (get-menu-by-categories categories :entry-list entry-list) 
             (list '(".." . :up) '("...." . nil)))
     (append (loop for category in main-categories
-              collect (cons category category))
+              collect (cons (concatenate 'string category " >>") category))
             (list '(".." . nil)))))
 
 (stumpwm:defcommand show-menu () ()
   "show the application menu"
-  (let ((stack-categories nil) (prompt "Categories:"))
+  (let ((stack-categories nil) (prompt "Application:"))
     (loop
       (let ((entry-index 
               (cdr (stumpwm:select-from-menu 
@@ -227,8 +227,6 @@
                   (command-line 
                     (nth entry-index *entry-list*))) (return))
           ((stringp entry-index)
-            (push entry-index stack-categories) 
-            (setf prompt "Applications:"))
+            (push entry-index stack-categories))
           ((eq entry-index :up)
-            (pop stack-categories) 
-            (setf prompt "Categories:")))))))
+            (pop stack-categories)))))))
