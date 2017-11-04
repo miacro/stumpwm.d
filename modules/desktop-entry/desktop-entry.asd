@@ -7,5 +7,7 @@
   :depends-on (#:stumpwm #:py-configparser #:cl-ppcre)
   :serial t
   :components ((:file "package")
-               (:file "desktop-entry")))
+               (:file "desktop-entry")
+               (:file "app-menu")
+               (:file "utils")))
 
