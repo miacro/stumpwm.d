@@ -68,12 +68,7 @@
   (format stream ":entry-type ~S :name ~S, :categories ~S)"
     (entry-type object) (name object) (categories object)))
 
-(defgeneric init-entry (entry path &optional &key main-section)
-  (:documentation "init entry from a .desktop file"))
-
-(defmethod init-entry ((entry desktop-entry) 
-                       (path pathname) 
-                       &optional &key (main-section *main-section*))
+(defun load-desktop-file (path &optional &key (main-section *main-section*))
   (flet 
     ((get-option (config entry-name &optional (type nil))
       (if (py-configparser:has-option-p config main-section entry-name)
@@ -90,49 +85,39 @@
             (no-display (get-option config "NoDisplay" :boolean))
             (only-show-in (get-option config "OnlyShowIn"))
             (terminal (get-option config "Terminal" :boolean)))
-      (when (string= name "") (setf name nil))
-      (when (string= exec "") (setf exec nil))
-      (when (and (stringp categories))
-        (setf categories (string-split ";" categories)))
-      (when (and (stringp only-show-in))
-        (setf only-show-in (string-split ";" only-show-in)))
-      (if (and name exec)
-        (with-accessors ((entry-name name) 
-                         (entry-entry-type entry-type)
-                         (entry-exec exec)
-                         (entry-path path)
-                         (entry-categories categories)
-                         (entry-no-display no-display)
-                         (entry-only-show-in only-show-in)
-                         (entry-terminal terminal)) 
-          entry
-          (setf entry-name name)
-          (setf entry-entry-type entry-type)
-          (setf entry-exec exec)
-          (setf entry-path path)
-          (setf entry-categories categories)
-          (setf entry-no-display no-display)
-          (setf entry-only-show-in only-show-in)
-          (setf entry-terminal terminal)
-          entry)
-        nil))))
+      (list
+        :name (if (string= name "") nil name)
+        :entry-type entry-type
+        :exec (if (string= exec "") nil exec)
+        :path path
+        :categories (if (stringp categories) (string-split ";" categories) categories)
+        :no-display no-display
+        :only-show-in (if (stringp only-show-in) (string-split ";" only-show-in) only-show-in)
+        :terminal terminal))))
 
-(defun get-entry-from-desktop-file (filename)
-  (let* ((entry (make-instance 'desktop-entry :name nil :exec nil :entry-type nil))i
-         (entry (init-entry entry filename)))
-    entry))
+(defgeneric make-desktop-entry (path &optional &key main-section)
+  (:documentation "init entry from a .desktop file"))
+
+(defmethod make-desktop-entry ((entry-content list)
+                               &optional &key (main-section *main-section*))
+  (make-instance 'desktop-entry 
+    :name (getf entry-content :name)
+    :entry-type (getf entry-content :entry-type)
+    :exec (getf entry-content :exec)
+    :path (getf entry-content :path)
+    :categories (getf entry-content :categories)
+    :no-display (getf entry-content :no-display)
+    :only-show-in (getf entry-content :only-show-in)
+    :terminal (getf entry-content :terminal)))
+
+(defmethod make-desktop-entry ((path pathname) 
+                                &optional &key (main-section *main-section*))
+  (make-desktop-entry (load-desktop-file path :main-section main-section)))
 
 (defun list-entry-files (path)
-    (remove-if-not (lambda (file)
-                      (search "desktop"
-                        (file-namestring file)))
-                    (list-directory path)))
-
-(defun load-file-content (filename)
-  (with-open-file (stream filename)
-    (let ((data (make-string (file-length stream))))
-      (read-sequence data stream)
-      data)))
+  (remove-if-not 
+    (lambda (file) (search "desktop" (file-namestring file)))
+    (list-directory path)))
 
 (defgeneric command-line (entry)
   (:documentation "get command line from an entry"))
@@ -172,7 +157,7 @@
   (setf *entry-list* (append *entry-list* (list entry))))
 
 (defmethod add-to-entry-list ((entry pathname))
-  (let ((entry (get-entry-from-desktop-file entry)))
+  (let ((entry (make-desktop-entry entry)))
     (when entry (add-to-entry-list entry))))
 
 (defun init-entry-list (&optional (entry-paths *entry-paths*))
