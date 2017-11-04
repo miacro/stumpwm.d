@@ -2,6 +2,7 @@
 
 (in-package #:desktop-entry)
 
+(defvar *favorite-category* "Favorite")
 (defvar *main-categories* 
   (list 
     *favorite-category*
@@ -22,6 +23,19 @@
   '(#P"/usr/share/applications"
     #P"~/.local/share/applications"))
 (defvar *entry-list* '())
+
+(defgeneric set-entry-favorite (entry &optional &key entry-list favorite-category)
+  (:documentation "add entry as favorite"))
+
+(defmethod set-entry-favorite ((entry-name string) 
+                               &optional &key 
+                               (entry-list *entry-list*)
+                               (favorite-category *favorite-category*))
+  (let ((entry-index (position entry-name entry-list 
+                        :test (lambda (name entry) (string= name (name entry))))))
+    (when entry-index 
+      (add-category (nth entry-index entry-list) favorite-category))))
+
 
 (defgeneric add-to-entry-list (entry)
   (:documentation "add an entry to *entry-list*"))
