@@ -28,3 +28,18 @@
 (set-entry-favorite "Google Chrome")
 (setf *menu* (build-menu *favorite-category*))
 (format t "menu: ~S~%" *menu*)
+
+(format t "all categories: ~S~%" (get-all-categories))
+(format t "entry list /System/Utility/:~%")
+(dolist (entry (filter-entry-by-categories '("System" "Utility")))
+  (format t "~A~%" entry))
+
+(format t "entry list /System/:~%")
+(dolist (entry (filter-entry-by-categories '("System" "Utility")))
+  (format t "~A~%" entry))
+
+(format t "grouped entrys: ~S~%" (group-entry-by-categories 
+                                    :entry-list (filter-entry-by-categories '("System"))))
+
+(format t "menu ~S~%" (build-menu2))
+
