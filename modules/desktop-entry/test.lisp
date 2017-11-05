@@ -41,6 +41,6 @@
     (format t "~A~%" entry))
   (format t "grouped entrys: ~S~%" 
     (group-entry-by-categories :entry-list (filter-entry-by-categories '("System"))))
-  (return-from test-desktop-entry) 
   (format t "menu ~S~%" (build-menu2))
+  (return-from test-desktop-entry) 
 )

@@ -127,11 +127,31 @@
       (cond 
         ((listp item)
          (setf (cdr menu) 
-            (cons (cons (car item) (car item)) (cdr menu))) 
-          (format t "~A~%" menu))
+            (cons (cons (car item) (car item)) (cdr menu)))) 
         (T 
-         (setf (cdr menu) (name item)))))
+         (setf (cdr menu) 
+            (cons (cons (name item) item) (cdr menu))))))
     menu))
+
+(stumpwm:defcommand show-menu2 () ()
+  "show the application menu"
+  (let ((stack-categories nil))
+    (loop
+      (let* 
+        ((menu (build-menu2 (reverse stack-categories)))
+         (item (cdr (stumpwm:select-from-menu 
+                      (stumpwm:current-screen) 
+                      (cdr menu)
+                      (car menu)))))
+        (cond
+          ((not item) (return))
+          ((typep item 'desktop-entry)
+            (stumpwm:run-shell-command (command-line item)) 
+            (return))
+          ((stringp item)
+            (push item stack-categories))
+          ((eq item :up)
+            (pop stack-categories)))))))
 
 (defun build-menu (&optional (categories nil)
                    &key 
