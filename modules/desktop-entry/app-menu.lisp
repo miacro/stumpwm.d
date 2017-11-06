@@ -83,7 +83,7 @@
                   (when (not (entry-in-category-p entry category))
                     (return-from test-entry nil)))
                 (return-from test-entry T)))
-    collect entry))
+      collect entry))
 
 (defun get-all-categories (&optional &key
                            (entry-list *entry-list*))
@@ -117,12 +117,12 @@
                    &key 
                    (entry-list *entry-list*) 
                    (main-categories *main-categories*))
-  (when categories 
-    (setf entry-list (filter-entry-by-categories categories :entry-list entry-list)))
+  (setf entry-list (filter-entry-by-categories categories :entry-list entry-list))
   (let ((grouped-entrys (group-entry-by-categories :entry-list entry-list))
         (menu (cons "/" nil)))
     (dolist (category categories)
       (setf (car menu) (concatenate 'string (car menu) category "/")))
+    (setf (car menu) (concatenate 'string (car menu) ":"))
     (dolist (item grouped-entrys)
       (cond 
         ((listp item)

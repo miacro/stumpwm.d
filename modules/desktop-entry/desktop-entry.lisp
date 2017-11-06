@@ -31,8 +31,8 @@
       :accessor terminal)))
 
 (defmethod print-object ((object desktop-entry) stream)
-  (format stream "(:entry-type ~S :name ~S :categories ~S)"
-    (entry-type object) (name object) (categories object)))
+  (format stream "(:entry-type ~S :name ~S :categories ~S :no-display ~S)"
+    (entry-type object) (name object) (categories object) (no-display object)))
 
 (defun load-desktop-file (path &optional &key (main-section *main-section*))
   (flet 
