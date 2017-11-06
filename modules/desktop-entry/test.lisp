@@ -16,18 +16,12 @@
   (init-entry-list)
   (format t "entry count: ~S~%" (length *entry-list*))
   
-  (format t "menu: ~S~%" (get-menu-by-categories "Network;System"))
-  (format t "menu: ~S~%"  (get-menu-by-categories "Qt"))
-  
-  (format t "menu: ~S~%" (build-menu))
-  
   (add-category (first *entry-list*) *favorite-category*)
   (format t "favorite categories: ~A~%" (categories (first *entry-list*)))
   (add-category (first *entry-list*) *favorite-category*)
   (format t "favorite categories: ~A~%" (categories (first *entry-list*)))
   (add-category (third *entry-list*) *favorite-category*)
   (set-entry-favorite "Google Chrome")
-  (format t "menu: ~S~%"  (build-menu *favorite-category*))
   
   (format t "all categories: ~S~%" (get-all-categories))
   (format t "entry list /:~%")
@@ -46,6 +40,6 @@
 
   (format t "grouped entrys /: ~S~%" 
     (group-entry-by-categories :entry-list (filter-entry-by-categories '())))
-  (format t "menu ~S~%" (build-menu2 '()))
+  (format t "menu ~S~%" (build-menu '()))
   (return-from test-desktop-entry) 
 )
