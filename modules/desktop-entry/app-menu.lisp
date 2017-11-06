@@ -125,11 +125,14 @@
     (setf (car menu) (concatenate 'string (car menu) ":"))
     (dolist (item grouped-entrys)
       (cond 
-        ((listp item)
-         (setf (cdr menu) 
+        ((and (listp item) 
+              (not (position (car item) 
+                              categories 
+                              :test #'string=)))
+          (setf (cdr menu) 
             (cons (cons (car item) (car item)) (cdr menu)))) 
-        (T 
-         (setf (cdr menu) 
+        ((typep item 'desktop-entry)
+          (setf (cdr menu) 
             (cons (cons (name item) item) (cdr menu))))))
     menu))
 
