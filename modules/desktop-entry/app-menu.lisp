@@ -85,7 +85,7 @@
                                   (min-entry-in-category nil)
                                   (exceptive-categories nil)
                                   (entry-list *entry-list*))
-  (when (not min-entry-in-category) (setf min-entry-in-category 5))
+  (when (not min-entry-in-category) (setf min-entry-in-category 2))
   (when (not categories) (setf categories (get-all-categories :entry-list entry-list)))
   (let ((grouped-entrys nil) (other-entrys nil))
     (dolist (category categories)
@@ -119,23 +119,20 @@
                           :exceptive-categories categories
                           :min-entry-in-category min-entry-in-category
                           :entry-list entry-list))
-        (menu (cons "/" nil)))
-    (dolist (category categories)
-      (setf (car menu) (concatenate 'string (car menu) category "/")))
-    (setf (car menu) (concatenate 'string (car menu) ":"))
+        (menu nil))
     (dolist (item grouped-entrys)
       (cond
         ((and (listp item)
               (not (position (car item)
                               categories
                               :test #'string=)))
-          (setf (cdr menu)
+          (setf menu
             (cons (cons (concatenate 'string (car item) " >>") 
                         (car item)) 
-                  (cdr menu))))
+                  menu)))
         ((typep item 'desktop-entry)
-          (setf (cdr menu)
-            (cons (cons (name item) item) (cdr menu))))))
+          (setf menu
+            (cons (cons (name item) item) menu)))))
     menu))
 
 (stumpwm:defcommand show-menu () ()
@@ -145,14 +142,32 @@
       (let*
         ((menu (build-menu (reverse stack-categories) 
                   :min-entry-in-category (if stack-categories nil 1)))
+         (menu (cdr menu))
+         (menu (sort menu (lambda (x y)
+                  (cond 
+                    ((and (typep x 'desktop-entry)
+                          (listp y))
+                      nil)
+                    ((and (listp x)
+                          (typep y 'desktop-entry))
+                     T)
+                    ((and (listp x) (listp y))
+                     (string< (car x) (car y))) 
+                    ((and (typep x 'desktop-entry) (typep y 'desktop-entry))
+                     (string< (name x) (name y)))
+                    (T nil)))))
          (menu 
             (if stack-categories
               (append menu (list (cons ".." :up) (cons "...." nil)))
               (append menu (list (cons ".." nil)))))
+         (prompt (let ((prompt-string "/"))
+                    (dolist (category (reverse stack-categories))
+                      (setf prompt-string (concatenate 'string category "/")))
+                      (setf prompt-string (concatenate 'string prompt-string ":"))))
          (item (cdr (stumpwm:select-from-menu
                       (stumpwm:current-screen)
-                      (cdr menu)
-                      (car menu)))))
+                      menu
+                      prompt))))
         (cond
           ((not item) (return))
           ((typep item 'desktop-entry)
