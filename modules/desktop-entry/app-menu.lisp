@@ -3,8 +3,8 @@
 (in-package #:desktop-entry)
 
 (defvar *favorite-category* "Favorite")
-(defvar *main-categories* 
-  (list 
+(defvar *main-categories*
+  (list
     *favorite-category*
     "AudioVideo"
     "Audio"
@@ -19,7 +19,7 @@
     "System"
     "Utility"))
 
-(defvar *entry-paths* 
+(defvar *entry-paths*
   '(#P"/usr/share/applications"
     #P"~/.local/share/applications"))
 (defvar *entry-list* '())
@@ -27,13 +27,13 @@
 (defgeneric set-entry-favorite (entry &optional &key entry-list favorite-category)
   (:documentation "add entry as favorite"))
 
-(defmethod set-entry-favorite ((entry-name string) 
-                               &optional &key 
+(defmethod set-entry-favorite ((entry-name string)
+                               &optional &key
                                (entry-list *entry-list*)
                                (favorite-category *favorite-category*))
-  (let ((entry-index (position entry-name entry-list 
+  (let ((entry-index (position entry-name entry-list
                         :test (lambda (name entry) (string= name (name entry))))))
-    (when entry-index 
+    (when entry-index
       (add-category (nth entry-index entry-list) favorite-category))))
 
 
@@ -53,32 +53,15 @@
     (dolist (entry-file (list-entry-files entry-path))
       (add-to-entry-list entry-file))))
 
-(defun get-menu-by-categories (categories &optional &key (entry-list *entry-list*))
-  (when (stringp categories) 
-    (setf categories (string-split ";" categories)))
-    (let ((menu nil) (entry nil))
-      (loop for index from (- (length entry-list) 1) downto 0 by 1
-        do (setf entry (nth index entry-list))
-        when (and (not (no-display entry)) 
-                  (not (only-show-in entry))
-                  (or (string= "Application" (entry-type entry))
-                      ;;(string= "Directory" (entry-type entry))
-                      ;;(string= "Link" (entry-type entry))
-                  ))
-          do (dolist (category categories)
-              (when (entry-in-category-p entry category)
-                 (setf menu (cons (cons (name entry) index) menu)))))
-      menu))
-
 (defun filter-entry-by-categories (categories &optional &key (entry-list *entry-list*))
   (loop for entry in entry-list
-    when (and (not (no-display entry)) 
+    when (and (not (no-display entry))
               (not (only-show-in entry))
               (or (string= "Application" (entry-type entry))
                   ;;(string= "Directory" (entry-type entry))
                   ;;(string= "Link" (entry-type entry))
               )
-              (block test-entry 
+              (block test-entry
                 (dolist (category categories)
                   (when (not (entry-in-category-p entry category))
                     (return-from test-entry nil)))
@@ -97,92 +80,85 @@
           (setf category-list (add-category-to-list category category-list))))
       category-list)))
 
-(defun group-entry-by-categories (&optional &key (entry-list *entry-list*))
+(defun group-entry-by-categories (&optional &key
+                                  (categories nil)
+                                  (min-entry-in-category nil)
+                                  (exceptive-categories nil)
+                                  (entry-list *entry-list*))
+  (when (not min-entry-in-category) (setf min-entry-in-category 5))
+  (when (not categories) (setf categories (get-all-categories :entry-list entry-list)))
   (let ((grouped-entrys nil) (other-entrys nil))
-    (dolist (category (get-all-categories :entry-list entry-list))
+    (dolist (category categories)
       (setf grouped-entrys (cons (cons category nil) grouped-entrys))
       (dolist (entry entry-list)
-        (when (entry-in-category-p entry category)
-          (setf (cdr (car grouped-entrys)) 
+        (when (and (entry-in-category-p entry category)
+                   (not
+                      (position category exceptive-categories :test #'string=)))
+          (setf (cdr (car grouped-entrys))
             (cons entry (cdr (car grouped-entrys)))))))
+    (setf grouped-entrys 
+      (loop for item in grouped-entrys
+        when (>= (length (cdr item)) min-entry-in-category)
+          collect item))
     (dolist (entry entry-list)
-      (when (not (position entry grouped-entrys 
-                    :test 
-                    (lambda (a b) 
+      (when (not (position entry grouped-entrys
+                    :test
+                    (lambda (a b)
                       (position a (cdr b) :test #'eq))))
         (setf other-entrys (cons entry other-entrys))))
     (append grouped-entrys other-entrys)))
 
-(defun build-menu2 (&optional (categories nil)
-                   &key 
-                   (entry-list *entry-list*) 
+(defun build-menu (&optional (categories nil)
+                   &key
+                   (entry-list *entry-list*)
+                   (min-entry-in-category nil)
                    (main-categories *main-categories*))
   (setf entry-list (filter-entry-by-categories categories :entry-list entry-list))
-  (let ((grouped-entrys (group-entry-by-categories :entry-list entry-list))
+  (let ((grouped-entrys (group-entry-by-categories
+                          :categories (if categories nil *main-categories*)
+                          :exceptive-categories categories
+                          :min-entry-in-category min-entry-in-category
+                          :entry-list entry-list))
         (menu (cons "/" nil)))
     (dolist (category categories)
       (setf (car menu) (concatenate 'string (car menu) category "/")))
     (setf (car menu) (concatenate 'string (car menu) ":"))
     (dolist (item grouped-entrys)
-      (cond 
-        ((and (listp item) 
-              (not (position (car item) 
-                              categories 
+      (cond
+        ((and (listp item)
+              (not (position (car item)
+                              categories
                               :test #'string=)))
-          (setf (cdr menu) 
-            (cons (cons (car item) (car item)) (cdr menu)))) 
+          (setf (cdr menu)
+            (cons (cons (concatenate 'string (car item) " >>") 
+                        (car item)) 
+                  (cdr menu))))
         ((typep item 'desktop-entry)
-          (setf (cdr menu) 
+          (setf (cdr menu)
             (cons (cons (name item) item) (cdr menu))))))
     menu))
 
-(stumpwm:defcommand show-menu2 () ()
+(stumpwm:defcommand show-menu () ()
   "show the application menu"
   (let ((stack-categories nil))
     (loop
-      (let* 
-        ((menu (build-menu2 (reverse stack-categories)))
-         (item (cdr (stumpwm:select-from-menu 
-                      (stumpwm:current-screen) 
+      (let*
+        ((menu (build-menu (reverse stack-categories) 
+                  :min-entry-in-category (if stack-categories nil 1)))
+         (menu 
+            (if stack-categories
+              (append menu (list (cons ".." :up) (cons "...." nil)))
+              (append menu (list (cons ".." nil)))))
+         (item (cdr (stumpwm:select-from-menu
+                      (stumpwm:current-screen)
                       (cdr menu)
                       (car menu)))))
         (cond
           ((not item) (return))
           ((typep item 'desktop-entry)
-            (stumpwm:run-shell-command (command-line item)) 
+            (stumpwm:run-shell-command (command-line item))
             (return))
           ((stringp item)
             (push item stack-categories))
           ((eq item :up)
-            (pop stack-categories)))))))
-
-(defun build-menu (&optional (categories nil)
-                   &key 
-                   (entry-list *entry-list*) 
-                   (main-categories *main-categories*))
-  (if categories
-    (append (get-menu-by-categories categories :entry-list entry-list) 
-            (list '(".." . :up) '("...." . nil)))
-    (append (loop for category in main-categories
-              collect (cons (concatenate 'string category " >>") category))
-            (list '(".." . nil)))))
-
-(stumpwm:defcommand show-menu () ()
-  "show the application menu"
-  (let ((stack-categories nil) (prompt "Application:"))
-    (loop
-      (let ((entry-index 
-              (cdr (stumpwm:select-from-menu 
-                      (stumpwm:current-screen) 
-                      (build-menu (reverse stack-categories))
-                      prompt))))
-        (cond 
-          ((not entry-index) (return))
-          ((numberp entry-index)
-                (stumpwm:run-shell-command 
-                  (command-line 
-                    (nth entry-index *entry-list*))) (return))
-          ((stringp entry-index)
-            (push entry-index stack-categories))
-          ((eq entry-index :up)
             (pop stack-categories)))))))
