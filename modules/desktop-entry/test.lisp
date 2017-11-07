@@ -41,5 +41,7 @@
   (format t "grouped entrys /: ~S~%" 
     (group-entry-by-categories :entry-list (filter-entry-by-categories '("AudioVideo"))))
   (format t "menu ~S~%" (build-menu '("AudioVideo") :min-entry-in-category 3))
+
+  (format t "menu ~S~%" (build-menu '("Network") :min-entry-in-category 5))
   (return-from test-desktop-entry) 
 )

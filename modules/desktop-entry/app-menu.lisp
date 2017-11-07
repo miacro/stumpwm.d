@@ -142,19 +142,21 @@
       (let*
         ((menu (build-menu stack-categories
                   :min-entry-in-category (if stack-categories nil 1)))
-         (menu (sort menu (lambda (x y)
-                  (cond 
-                    ((and (typep x 'desktop-entry)
-                          (listp y))
-                      nil)
-                    ((and (listp x)
-                          (typep y 'desktop-entry))
-                     T)
-                    ((and (listp x) (listp y))
-                     (string< (car x) (car y))) 
-                    ((and (typep x 'desktop-entry) (typep y 'desktop-entry))
-                     (string< (name x) (name y)))
-                    (T nil)))))
+         (menu (sort menu 
+                  #'(lambda (x y)
+                      (format t "~A; ~A~%" x y)
+                      (cond 
+                        ((and (typep x 'desktop-entry)
+                              (stringp y))
+                          nil)
+                        ((and (stringp x)
+                              (typep y 'desktop-entry))
+                          T)
+                        ((and (stringp x) (stringp y))
+                          (string-lessp x y)) 
+                        ((and (typep x 'desktop-entry) (typep y 'desktop-entry))
+                          (string-lessp (name x) (name y)))
+                        (T nil))) :key #'cdr))
          (menu 
             (if stack-categories
               (append menu (list (cons ".." :up) (cons "...." nil)))
