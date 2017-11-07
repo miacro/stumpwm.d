@@ -161,6 +161,8 @@
             (if stack-categories
               (append menu (list (cons ".." :up) (cons "...." nil)))
               (append menu (list (cons ".." nil)))))
+         (menu (loop for item in menu
+                  collect (cons (concatenate 'string "^[^6*^b" (car item) "^]") (cdr item))))
          (prompt (let ((prompt-string "/"))
                     (dolist (category (reverse stack-categories))
                       (setf prompt-string (concatenate 'string prompt-string category "/")))
