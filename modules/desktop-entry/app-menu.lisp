@@ -85,7 +85,7 @@
                                   (min-entry-in-category nil)
                                   (exceptive-categories nil)
                                   (entry-list *entry-list*))
-  (when (not min-entry-in-category) (setf min-entry-in-category 2))
+  (when (not min-entry-in-category) (setf min-entry-in-category 5))
   (when (not categories) (setf categories (get-all-categories :entry-list entry-list)))
   (let ((grouped-entrys nil) (other-entrys nil))
     (dolist (category categories)
@@ -140,9 +140,8 @@
   (let ((stack-categories nil))
     (loop
       (let*
-        ((menu (build-menu (reverse stack-categories) 
+        ((menu (build-menu stack-categories
                   :min-entry-in-category (if stack-categories nil 1)))
-         (menu (cdr menu))
          (menu (sort menu (lambda (x y)
                   (cond 
                     ((and (typep x 'desktop-entry)
@@ -163,7 +162,7 @@
          (prompt (let ((prompt-string "/"))
                     (dolist (category (reverse stack-categories))
                       (setf prompt-string (concatenate 'string prompt-string category "/")))
-                      (setf prompt-string (concatenate 'string prompt-string ":"))))
+                    (setf prompt-string (concatenate 'string prompt-string ":"))))
          (item (cdr (stumpwm:select-from-menu
                       (stumpwm:current-screen)
                       menu

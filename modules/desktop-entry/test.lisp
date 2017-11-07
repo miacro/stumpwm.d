@@ -39,7 +39,7 @@
     (group-entry-by-categories :entry-list (filter-entry-by-categories '("System"))))
 
   (format t "grouped entrys /: ~S~%" 
-    (group-entry-by-categories :entry-list (filter-entry-by-categories '())))
-  (format t "menu ~S~%" (build-menu '()))
+    (group-entry-by-categories :entry-list (filter-entry-by-categories '("AudioVideo"))))
+  (format t "menu ~S~%" (build-menu '("AudioVideo") :min-entry-in-category 3))
   (return-from test-desktop-entry) 
 )
