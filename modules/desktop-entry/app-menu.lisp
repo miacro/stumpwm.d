@@ -162,7 +162,7 @@
               (append menu (list (cons ".." nil)))))
          (prompt (let ((prompt-string "/"))
                     (dolist (category (reverse stack-categories))
-                      (setf prompt-string (concatenate 'string category "/")))
+                      (setf prompt-string (concatenate 'string prompt-string category "/")))
                       (setf prompt-string (concatenate 'string prompt-string ":"))))
          (item (cdr (stumpwm:select-from-menu
                       (stumpwm:current-screen)
