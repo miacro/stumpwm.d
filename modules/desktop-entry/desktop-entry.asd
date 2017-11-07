@@ -8,6 +8,7 @@
   :serial t
   :components ((:file "package")
                (:file "desktop-entry")
+               (:file "entry-list")
                (:file "app-menu")
                (:file "utils")))
 
