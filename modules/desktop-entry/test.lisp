@@ -30,7 +30,9 @@
   (add-category (first *entry-list*) "test")
   (format t "test categories: ~A~%" (categories (first *entry-list*)))
   (add-category (third *entry-list*) "test")
-  (add-favroite-entry "Google Chrome")
+
+  (add-favorite-entry "Google Chrome")
+  (format t "favroite entry length: ~S~%" (length *favorite-list*))
   
   (format t "all categories: ~S~%" (get-all-categories *entry-list*))
   (format t "entry list /:~%")

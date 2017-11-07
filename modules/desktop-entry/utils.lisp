@@ -12,5 +12,5 @@
 
 (defun list-entry-files (path)
   (remove-if-not 
-    (lambda (file) (search "desktop" (file-namestring file)))
+    #'(lambda (file) (search "desktop" (file-namestring file)))
     (list-directory path)))

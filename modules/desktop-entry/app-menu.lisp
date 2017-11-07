@@ -16,27 +16,27 @@
     "Settings"
     "System"
     "Utility"))
-
+(defvar *favorite-category* "Favorite")
 (defvar *entry-paths*
   '(#P"/usr/share/applications"
     #P"~/.local/share/applications"))
 (defvar *entry-list* '())
 (defvar *favorite-list* '())
 
-(defgeneric add-favroite-entry (entry)
+(defgeneric add-favorite-entry (entry)
   (:documentation "add entry as favorite"))
 
-(defmethod add-favroite-entry ((entry-name string))
+(defmethod add-favorite-entry ((entry desktop-entry))
+  (setf *favorite-list* (add-to-entry-list *favorite-list* entry)))
+
+(defmethod add-favorite-entry ((entry pathname))
+  (setf *favorite-list* (add-to-entry-list *favorite-list* entry)))
+
+(defmethod add-favorite-entry ((entry-name string))
   (let ((entry-index (position entry-name *entry-list*
-                        :test (lambda (name entry) (string= name (name entry))))))
+                        :test #'(lambda (name entry) (string= name (name entry))))))
     (when entry-index
-      (add-to-entry-list *favorite-list* (nth entry-index *entry-list*)))))
-
-(defmethod add-favroite-entry ((entry desktop-entry))
-  (add-to-entry-list *favorite-list* entry))
-
-(defmethod add-favroite-entry ((entry pathname))
-  (add-to-entry-list *favorite-list* entry))
+      (add-favorite-entry (nth entry-index *entry-list*)))))
 
 
 (defun init-entry-list (&optional (entry-paths *entry-paths*))
@@ -74,11 +74,22 @@
 
 (stumpwm:defcommand show-menu () ()
   "show the application menu"
-  (let ((stack-categories nil))
+  (let ((stack-categories nil) (stack-type :root))
     (loop
       (let*
-        ((menu (build-menu stack-categories
-                  :min-entry-in-category (if stack-categories nil 1)))
+        ((stack-type (cond 
+                        ((not stack-categories) :root)
+                        ((string= (first stack-categories) *favorite-category*) :favorite)
+                        (T :normal)))
+         (menu (build-menu 
+                  (cond 
+                    ((eq stack-type :favorite) (cdr stack-categories))
+                    (T stack-categories))
+                  :entry-list (cond 
+                                ((eq stack-type :favorite)
+                                  *favorite-list*)
+                                (T *entry-list*))
+                  :min-entry-in-category (if (eq stack-type :root) 1 nil)))
          (menu (sort menu
                   #'(lambda (x y)
                       (format t "~A; ~A~%" x y)
@@ -94,6 +105,13 @@
                         ((and (typep x 'desktop-entry) (typep y 'desktop-entry))
                           (string-lessp (name x) (name y)))
                         (T nil))) :key #'cdr))
+         (menu (cond 
+                  ((eq stack-type :root)
+                    (cons (cons 
+                            (concatenate 'string *favorite-category* " >>") 
+                            *favorite-category*) 
+                      menu))
+                  (T menu)))
          (menu
             (if stack-categories
               (append menu (list (cons ".." :up) (cons "...." nil)))

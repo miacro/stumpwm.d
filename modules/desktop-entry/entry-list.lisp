@@ -62,8 +62,6 @@
           collect item))
     (dolist (entry entry-list)
       (when (not (position entry grouped-entrys
-                    :test
-                    (lambda (a b)
-                      (position a (cdr b) :test #'eq))))
+                    :test #'(lambda (a b) (position a (cdr b) :test #'eq))))
         (setf other-entrys (cons entry other-entrys))))
     (append grouped-entrys other-entrys)))
