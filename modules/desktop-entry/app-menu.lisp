@@ -96,7 +96,7 @@
                       (position category exceptive-categories :test #'string=)))
           (setf (cdr (car grouped-entrys))
             (cons entry (cdr (car grouped-entrys)))))))
-    (setf grouped-entrys 
+    (setf grouped-entrys
       (loop for item in grouped-entrys
         when (>= (length (cdr item)) min-entry-in-category)
           collect item))
@@ -127,8 +127,8 @@
                               categories
                               :test #'string=)))
           (setf menu
-            (cons (cons (concatenate 'string (car item) " >>") 
-                        (car item)) 
+            (cons (cons (concatenate 'string (car item) " >>")
+                        (car item))
                   menu)))
         ((typep item 'desktop-entry)
           (setf menu
@@ -142,10 +142,10 @@
       (let*
         ((menu (build-menu stack-categories
                   :min-entry-in-category (if stack-categories nil 1)))
-         (menu (sort menu 
+         (menu (sort menu
                   #'(lambda (x y)
                       (format t "~A; ~A~%" x y)
-                      (cond 
+                      (cond
                         ((and (typep x 'desktop-entry)
                               (stringp y))
                           nil)
@@ -153,11 +153,11 @@
                               (typep y 'desktop-entry))
                           T)
                         ((and (stringp x) (stringp y))
-                          (string-lessp x y)) 
+                          (string-lessp x y))
                         ((and (typep x 'desktop-entry) (typep y 'desktop-entry))
                           (string-lessp (name x) (name y)))
                         (T nil))) :key #'cdr))
-         (menu 
+         (menu
             (if stack-categories
               (append menu (list (cons ".." :up) (cons "...." nil)))
               (append menu (list (cons ".." nil)))))
@@ -165,10 +165,9 @@
                     (dolist (category (reverse stack-categories))
                       (setf prompt-string (concatenate 'string prompt-string category "/")))
                     (setf prompt-string (concatenate 'string prompt-string ":"))))
-         (item (cdr (stumpwm:select-from-menu
-                      (stumpwm:current-screen)
-                      menu
-                      prompt))))
+         (item (handler-case
+                  (cdr (stumpwm:select-from-menu (stumpwm:current-screen) menu prompt))
+                  (error (condition) nil))))
         (cond
           ((not item) (return))
           ((typep item 'desktop-entry)
