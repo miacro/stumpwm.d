@@ -117,3 +117,4 @@ install_manifest.txt
 /.cache
 /.menurc
 /.debug
+/.initrc
