@@ -46,9 +46,10 @@
 ;;(add-hook *mode-line-click-hook* 'my-popup)
 (load-module "miacro-theme")
 (load-module "desktop-entry")
-(run-with-timer 0 3600 #'(lambda () 
-                           (miacro-theme:display-background 
-                             (miacro-theme:select-random-background "~/pictures"))))
+(defcommand display-random-background () ()
+  (miacro-theme:display-background 
+    (miacro-theme:select-random-background "~/pictures")))
+(run-with-timer 0 3600 #'display-random-background)
 (grename "1")
 (gnewbg "2")
 (gnewbg "3")
@@ -67,8 +68,6 @@
 (set-msg-border-width 2)
 (set-border-color "#2aa198")
 
-;;(setf *screen-mode-line-format*
-;;      (list " %v | %c | %M | %g | %d"))
 (setf *mode-line-timeout* 1)
 (setf stumpwm:*screen-mode-line-format*
   (list
@@ -86,16 +85,6 @@
     "   "))
 
 (toggle-mode-line (current-screen) (current-head))
-
-;;(desktop-entry:init-menu '(("chrome" "google-chrome-stable")
-;;                             ("xterm" "xterm")))
-;;(desktop-entry:load-menu-file "~/.stumpwm.d/menurc")
-;;(setf user-menu-file "~/.stumpwm.d/.menurc")
-;;(if (probe-file user-menu-file)
-;;  (desktop-entry:load-menu-file user-menu-file))
-;;
-
-;;(setf desktop-entry::*app-menu* '(("chrome" . "google-chrome-stable") ("firefox" . "firefox")))
 
 (desktop-entry::init-entry-list)
 (define-key *root-map* (kbd "m") "show-menu")
