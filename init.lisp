@@ -80,7 +80,7 @@
     (miacro-theme:mode-line-separator-start)
     '(:eval (string-right-trim '(#\Newline) 
               (run-shell-command
-                "date +'^[^B%Y-%m-%d ^6*%H:%M:%S^]'" t)))
+                "date +'^[^B%Y-%m-%d ^6*%H:%M:%S %a^]'" t)))
     (miacro-theme:mode-line-separator-end)
     "   "))
 
