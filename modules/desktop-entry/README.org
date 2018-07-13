@@ -1,0 +1,3 @@
+* requirements
+- py-configparser: parsing desktop entry file
+- FiveAM: test framework

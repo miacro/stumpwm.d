@@ -99,6 +99,16 @@
         (not (position category categories :test #'string=))
       (setf categories (cons category categories)))))
 
+(defgeneric desktop-entry-equalp (entry-a entry-b)
+  (:documentation
+   "compares two desktop-entrys and is true if they are the same"))
+
+(defmethod desktop-entry-equalp ((entry-a desktop-entry)
+                                (entry-b desktop-entry))
+  (and (string= (name entry-a) (name entry-b))
+       (string= (entry-type entry-a) (entry-type entry-b))
+       (string= (exec entry-a) (exec entry-b))))
+
 (defgeneric desktop-entry-equal (entry-a entry-b)
   (:documentation
    "compares two desktop-entrys and is true if they are the same"))
@@ -107,7 +117,12 @@
                                 (entry-b desktop-entry))
   (and (string= (name entry-a) (name entry-b))
        (string= (entry-type entry-a) (entry-type entry-b))
-       (string= (exec entry-a) (exec entry-b))))
+       (string= (exec entry-a) (exec entry-b))
+       (equalp (path entry-a) (path entry-b))
+       (equalp (categories entry-a) (categories entry-b))
+       (equalp (no-display entry-a) (no-display entry-b))
+       (equalp (only-display-in entry-a) (only-display-in entry-b))
+       (equalp (terminal entry-a) (terminal entry-b))))
 
 (defun entry-in-category-p (entry category)
   (dolist (entry-category (categories entry))
