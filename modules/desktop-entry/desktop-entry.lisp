@@ -121,7 +121,7 @@
        (equalp (path entry-a) (path entry-b))
        (equalp (categories entry-a) (categories entry-b))
        (equalp (no-display entry-a) (no-display entry-b))
-       (equalp (only-display-in entry-a) (only-display-in entry-b))
+       (equalp (only-show-in entry-a) (only-show-in entry-b))
        (equalp (terminal entry-a) (terminal entry-b))))
 
 (defun entry-in-category-p (entry category)
