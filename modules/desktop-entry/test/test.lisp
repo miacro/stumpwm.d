@@ -65,110 +65,114 @@
   (fiveam:def-suite test-desktop-entry-suite)
   (fiveam:in-suite test-desktop-entry-suite)
 
-  (fiveam:test init-desktop-entry
-    (fiveam:is (equalp (load-desktop-file "google-chrome.desktop")
-                       (first *true-value-plist*)))
-    (loop for index from 0 below (length *desktop-entry-pathnames*)
-       do (fiveam:is (equalp (load-desktop-file
-                              (nth index *desktop-entry-pathnames*))
-                             (nth index *true-value-plist*))))
-    (loop for index from 0 below (length *desktop-entry-pathnames*)
-       do (fiveam:is (desktop-entry-equal
-                      (make-desktop-entry (nth index *desktop-entry-pathnames*))
-                      (nth index *true-value-entry*)))))
+  (fiveam:test
+   init-desktop-entry
+   (fiveam:is (equalp (load-desktop-file "google-chrome.desktop")
+                      (first *true-value-plist*)))
+   (loop for index from 0 below (length *desktop-entry-pathnames*)
+      do (fiveam:is (equalp (load-desktop-file
+                             (nth index *desktop-entry-pathnames*))
+                            (nth index *true-value-plist*))))
+   (loop for index from 0 below (length *desktop-entry-pathnames*)
+      do (fiveam:is (desktop-entry-equal
+                     (make-desktop-entry (nth index *desktop-entry-pathnames*))
+                     (nth index *true-value-entry*)))))
 
-  (fiveam:test test-add-to-entry-list-1
-    (let* ((entry-list nil)
-           (entry-list (add-to-entry-list
-                        entry-list
-                        (make-desktop-entry #P"google-chrome.desktop")))
-           (entry-list-2 (add-to-entry-list
-                          entry-list
-                          (make-desktop-entry #P"emacs.desktop")))
-           (entry-list-3 (add-to-entry-list
-                          entry-list-2
-                          (make-desktop-entry #P"google-chrome.desktop"))))
-      (fiveam:is (and (= 1 (length entry-list))
-                      (eq 'desktop-entry
-                          (type-of (first entry-list)))
-                      (desktop-entry-equal
-                       (first *true-value-entry*)
-                       (first entry-list))))
-      (fiveam:is (and (= 2 (length entry-list-2))
-                      (desktop-entry-equal
-                       (second *true-value-entry*)
-                       (second entry-list-2))))
-      (fiveam:is (= 2 (length entry-list-3)))))
+  (fiveam:test
+   test-add-to-entry-list-1
+   (let* ((entry-list nil)
+          (entry-list (add-to-entry-list
+                       entry-list
+                       (make-desktop-entry #P"google-chrome.desktop")))
+          (entry-list-2 (add-to-entry-list
+                         entry-list
+                         (make-desktop-entry #P"emacs.desktop")))
+          (entry-list-3 (add-to-entry-list
+                         entry-list-2
+                         (make-desktop-entry #P"google-chrome.desktop"))))
+     (fiveam:is (and (= 1 (length entry-list))
+                     (eq 'desktop-entry
+                         (type-of (first entry-list)))
+                     (desktop-entry-equal
+                      (first *true-value-entry*)
+                      (first entry-list))))
+     (fiveam:is (and (= 2 (length entry-list-2))
+                     (desktop-entry-equal
+                      (second *true-value-entry*)
+                      (second entry-list-2))))
+     (fiveam:is (= 2 (length entry-list-3)))))
 
-  (fiveam:test test-add-to-entry-list-2
-    (let ((entry-list nil))
-      (loop for index from 0 below (length *desktop-entry-pathnames*)
-         do (setf entry-list (add-to-entry-list
-                              entry-list
-                              (nth index *desktop-entry-pathnames*)))
-           (fiveam:is (= (+ index 1) (length entry-list)))
-           (fiveam:is (desktop-entry-equal
-                       (nth index entry-list)
-                       (nth index *true-value-entry*)))
-         do (setf entry-list (add-to-entry-list
-                              entry-list
-                              (make-desktop-entry
-                               (nth index *desktop-entry-pathnames*))))
-           (fiveam:is (= (+ index 1) (length entry-list)))
-           (fiveam:is (desktop-entry-equal
-                       (nth index entry-list)
-                       (nth index *true-value-entry*))))))
+  (fiveam:test
+   test-add-to-entry-list-2
+   (let ((entry-list nil))
+     (loop for index from 0 below (length *desktop-entry-pathnames*)
+        do (setf entry-list (add-to-entry-list
+                             entry-list
+                             (nth index *desktop-entry-pathnames*)))
+          (fiveam:is (= (+ index 1) (length entry-list)))
+          (fiveam:is (desktop-entry-equal
+                      (nth index entry-list)
+                      (nth index *true-value-entry*)))
+        do (setf entry-list (add-to-entry-list
+                             entry-list
+                             (make-desktop-entry
+                              (nth index *desktop-entry-pathnames*))))
+          (fiveam:is (= (+ index 1) (length entry-list)))
+          (fiveam:is (desktop-entry-equal
+                      (nth index entry-list)
+                      (nth index *true-value-entry*))))))
 
-  (fiveam:test test-add-category
-    (let ((entry (make-desktop-entry
-                  (first *desktop-entry-pathnames*))))
-      (fiveam:is (equal '("Network" "WebBrowser")
-                        (categories entry)))
-      (add-category entry "Test")
-      (fiveam:is (equal '("Network" "WebBrowser" "Test")
-                        (categories entry)))
-      (add-category entry "Test")
-      (fiveam:is (equal '("Network" "WebBrowser" "Test")
-                        (categories entry)))))
+  (fiveam:test
+   test-add-category
+   (let ((entry (make-desktop-entry
+                 (first *desktop-entry-pathnames*))))
+     (fiveam:is (equal '("Network" "WebBrowser")
+                       (categories entry)))
+     (add-category entry "Test")
+     (fiveam:is (equal '("Network" "WebBrowser" "Test")
+                       (categories entry)))
+     (add-category entry "Test")
+     (fiveam:is (equal '("Network" "WebBrowser" "Test")
+                       (categories entry)))))
 
-  (fiveam:test test-find-categories
-    (fiveam:is (equal '("Network" "WebBrowser"
-                        "Development" "TextEditor"
-                        "System" "TerminalEmulator"
-                        "Settings" "DesktopSettings"
-                        "X-LXDE-Settings" "GTK")
-                      (find-categories *true-value-entry*)))
-    (fiveam:is (equal '("Network" "WebBrowser"
-                        "Development" "TextEditor"
-                        "System" "TerminalEmulator")
-                      (find-categories
-                       *true-value-entry*
-                       :test #'(lambda (entry) (not (only-show-in entry)))))))
-  (fiveam:test test-entry-in-categories-p
-    (let ((entry-1 (first *true-value-entry*))
-          (entry-2 (fifth *true-value-entry*)))
-      (fiveam:is (entry-in-categories-p entry-1 '("Network")))
-      (fiveam:is (not (entry-in-categories-p entry-1 '("Test"))))
-      (fiveam:is (not (entry-in-categories-p entry-1 '("Network" "Test"))))
-      (fiveam:is (entry-in-categories-p entry-1 '("Network" "WebBrowser")))
-      (fiveam:is (entry-in-categories-p entry-2 '("Settings" "DesktopSettings"
-                                                  "GTK")))
-      (fiveam:is (not (entry-in-categories-p entry-2 '("Settings" "DesktopSettings"
-                                                       "GTK" "Test"))))))
+  (fiveam:test
+   test-find-categories
+   (fiveam:is (equal '("Network" "WebBrowser"
+                       "Development" "TextEditor"
+                       "System" "TerminalEmulator"
+                       "Settings" "DesktopSettings"
+                       "X-LXDE-Settings" "GTK")
+                     (find-categories *true-value-entry*)))
+   (fiveam:is (equal '("Network" "WebBrowser"
+                       "Development" "TextEditor"
+                       "System" "TerminalEmulator")
+                     (find-categories
+                      *true-value-entry*
+                      :test #'(lambda (entry) (not (only-show-in entry)))))))
+  (fiveam:test
+   test-entry-in-categories-p
+   (let ((entry-1 (first *true-value-entry*))
+         (entry-2 (fifth *true-value-entry*)))
+     (fiveam:is (entry-in-categories-p entry-1 '("Network")))
+     (fiveam:is (not (entry-in-categories-p entry-1 '("Test"))))
+     (fiveam:is (not (entry-in-categories-p entry-1 '("Network" "Test"))))
+     (fiveam:is (entry-in-categories-p entry-1 '("Network" "WebBrowser")))
+     (fiveam:is (entry-in-categories-p entry-2 '("Settings" "DesktopSettings"
+                                                 "GTK")))
+     (fiveam:is (not (entry-in-categories-p entry-2 '("Settings" "DesktopSettings"
+                                                      "GTK" "Test"))))))
+
+  (fiveam:test
+   test-find-entries
+   (fiveam:is (not (find-entries *true-value-entry*)))
+   (fiveam:is (every #'(lambda (a b) (desktop-entry-equal a b))
+                     (find-entries *true-value-entry*
+                                   :test #'(lambda (entry)
+                                             (entry-in-categories-p entry '("Network"))))
+                     (list (first *true-value-entry*) (nth 5 *true-value-entry*)))))
 
   (fiveam:run! 'test-desktop-entry-suite)
   (return-from test-desktop-entry)
-
-  (format t "entry list /:~%")
-  (dolist (entry (find-entries *entry-list* :categories '()))
-    (format t "~A~%" entry))
-  (format t "entry list /System/Utility/:~%")
-  (dolist (entry (find-entries *entry-list* :categories '("System" "Utility")))
-    (format t "~A~%" entry))
-
-  (format t "entry list /System/:~%")
-  (dolist (entry (find-entries *entry-list* :categories '("System")))
-    (format t "~A~%" entry))
 
   (format t "grouped entrys /System: ~S~%"
           (group-by-categories (find-entries *entry-list* :categories '("System"))))
