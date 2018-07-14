@@ -34,11 +34,11 @@
   (flet ((add-category-to-list (category category-list)
            (let ((index (position category category-list :test #'string=)))
              (when (not index)
-               (setf category-list (cons category category-list)))
+               (setf category-list (nconc category-list (list category))))
              category-list)))
     (let ((category-list nil))
       (dolist (entry entry-list)
-        (when (apply test '(entry))
+        (when (funcall test entry)
           (dolist (category (categories entry))
             (setf category-list
                   (add-category-to-list category category-list)))))

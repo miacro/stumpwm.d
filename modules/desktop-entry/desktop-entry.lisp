@@ -97,7 +97,7 @@
   (with-accessors ((categories categories)) entry
     (when
         (not (position category categories :test #'string=))
-      (setf categories (cons category categories)))))
+      (setf categories (nconc categories (list category))))))
 
 (defgeneric desktop-entry-equalp (entry-a entry-b)
   (:documentation
