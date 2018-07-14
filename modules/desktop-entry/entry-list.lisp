@@ -15,19 +15,9 @@
     (if entry (add-to-entry-list entry-list entry)
         entry-list)))
 
-(defun find-entries (entry-list &key categories)
+(defun find-entries (entry-list &optional &key (test #'(lambda (entry) nil)))
   (loop for entry in entry-list
-     when (and (not (no-display entry))
-               (not (only-show-in entry))
-               (or (string= "Application" (entry-type entry))
-                   ;;(string= "Directory" (entry-type entry))
-                   ;;(string= "Link" (entry-type entry))
-                   )
-               (block test-entry
-                 (dolist (category categories)
-                   (when (not (entry-in-category-p entry category))
-                     (return-from test-entry nil)))
-                 (return-from test-entry T)))
+     when (funcall test entry)
      collect entry))
 
 (defun find-categories (entry-list &optional &key (test #'(lambda (entry) T)))
@@ -54,7 +44,7 @@
     (dolist (category categories)
       (setf grouped-entrys (cons (cons category nil) grouped-entrys))
       (dolist (entry entry-list)
-        (when (and (entry-in-category-p entry category)
+        (when (and (entry-in-categories-p entry (list category))
                    (not (position category
                                   exceptive-categories
                                   :test #'string=)))

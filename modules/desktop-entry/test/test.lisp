@@ -144,6 +144,17 @@
                       (find-categories
                        *true-value-entry*
                        :test #'(lambda (entry) (not (only-show-in entry)))))))
+  (fiveam:test test-entry-in-categories-p
+    (let ((entry-1 (first *true-value-entry*))
+          (entry-2 (fifth *true-value-entry*)))
+      (fiveam:is (entry-in-categories-p entry-1 '("Network")))
+      (fiveam:is (not (entry-in-categories-p entry-1 '("Test"))))
+      (fiveam:is (not (entry-in-categories-p entry-1 '("Network" "Test"))))
+      (fiveam:is (entry-in-categories-p entry-1 '("Network" "WebBrowser")))
+      (fiveam:is (entry-in-categories-p entry-2 '("Settings" "DesktopSettings"
+                                                  "GTK")))
+      (fiveam:is (not (entry-in-categories-p entry-2 '("Settings" "DesktopSettings"
+                                                       "GTK" "Test"))))))
 
   (fiveam:run! 'test-desktop-entry-suite)
   (return-from test-desktop-entry)

@@ -51,7 +51,13 @@
                      (entry-list *entry-list*)
                      (min-entry-in-category nil)
                      (main-categories *main-categories*))
-  (setf entry-list (find-entries entry-list :categories categories))
+  (setf entry-list
+        (find-entries entry-list
+                      :test #'(lambda (entry)
+                                (and (not (no-display entry))
+                                     (not (only-show-in entry))
+                                     (string= "Application" (entry-type entry))
+                                     (entry-in-categories-p entry categories)))))
   (let ((grouped-entrys
          (group-by-categories entry-list
                               :categories (if categories nil *main-categories*)
