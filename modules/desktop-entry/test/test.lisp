@@ -165,11 +165,57 @@
   (fiveam:test
    test-find-entries
    (fiveam:is (not (find-entries *true-value-entry*)))
-   (fiveam:is (every #'(lambda (a b) (desktop-entry-equal a b))
-                     (find-entries *true-value-entry*
-                                   :test #'(lambda (entry)
-                                             (entry-in-categories-p entry '("Network"))))
-                     (list (first *true-value-entry*) (nth 5 *true-value-entry*)))))
+   (fiveam:is (= 2
+                 (length
+                  (find-entries
+                   *true-value-entry*
+                   :test #'(lambda (entry)
+                             (entry-in-categories-p entry '("Network")))))))
+   (fiveam:is (every
+               #'(lambda (a b) (desktop-entry-equal a b))
+               (find-entries
+                *true-value-entry*
+                :test #'(lambda (entry)
+                          (entry-in-categories-p entry '("Network"))))
+               (list (first *true-value-entry*) (nth 5 *true-value-entry*)))))
+
+  (fiveam:test
+   test-group-entries
+   (flet ((compare-groups (a b)
+            (fiveam:is (= (length a) (length b)))
+            (every #'(lambda (group1 group2)
+                       (fiveam:is (string= (car group1) (car group2)))
+                       (fiveam:is (= (length (cdr group1))
+                                     (length (cdr group2))))
+                       (every #'(lambda (x y)
+                                  (fiveam:is (desktop-entry-equal x y)))
+                              (cdr group1)
+                              (cdr group2)))
+                   a b)))
+     (compare-groups (list (list "Network" (first *true-value-entry*)))
+                     (list (list "Network" (first *true-value-entry*))))
+     (compare-groups (list (list "Network"
+                                 (first *true-value-entry*)
+                                 (nth 5 *true-value-entry*))
+                           (list "WebBrowser"
+                                 (first *true-value-entry*)
+                                 (nth 5 *true-value-entry*))
+                           (cons nil
+                                 (loop for index in '(1 2 3 4)
+                                    collect (nth index *true-value-entry*))))
+                     (group-entries *true-value-entry*
+                                    :categories '("Network" "WebBrowser")))
+     (compare-groups
+      (list (list "DesktopSettings"
+                  (fifth *true-value-entry*))
+            (list "Development"
+                  (second *true-value-entry*))
+            (cons nil
+                  (loop for index in '(0 2 3 5)
+                     collect (nth index *true-value-entry*))))
+      (group-entries *true-value-entry*
+                     :categories
+                     '("DesktopSettings" nil "Development")))))
 
   (fiveam:run! 'test-desktop-entry-suite)
   (return-from test-desktop-entry)

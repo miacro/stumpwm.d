@@ -60,3 +60,24 @@
                            #'(lambda (a b) (position a (cdr b) :test #'eq))))
         (setf other-entrys (cons entry other-entrys))))
     (append grouped-entrys other-entrys)))
+
+
+(defun group-entries (entry-list &key categories)
+  (let* ((groups
+          (loop for category in categories
+             when (not (eq category nil))
+             collect
+               (cons category
+                     (loop for entry in entry-list
+                        when (entry-in-categories-p entry (list category))
+                        collect entry))))
+         (others
+          (loop for entry in entry-list
+             when (not
+                   (position entry groups
+                             :test
+                             #'(lambda (a b)
+                                 (position a (cdr b)
+                                           :test #'eq))))
+             collect entry)))
+    (append groups (list (cons nil others)))))
