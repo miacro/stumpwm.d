@@ -96,7 +96,7 @@
 (defmethod add-category ((entry desktop-entry) (category string))
   (with-accessors ((categories categories)) entry
     (when
-        (not (position category categories :test #'string=))
+        (not (member category categories :test #'string=))
       (setf categories (nconc categories (list category))))))
 
 (defgeneric desktop-entry-equalp (entry-a entry-b)

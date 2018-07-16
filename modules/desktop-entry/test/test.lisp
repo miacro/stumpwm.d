@@ -133,6 +133,9 @@
                        (categories entry)))
      (add-category entry "Test")
      (fiveam:is (equal '("Network" "WebBrowser" "Test")
+                       (categories entry)))
+     (add-category entry "Network")
+     (fiveam:is (equal '("Network" "WebBrowser" "Test")
                        (categories entry)))))
 
   (fiveam:test
@@ -220,11 +223,6 @@
   (fiveam:run! 'test-desktop-entry-suite)
   (return-from test-desktop-entry)
 
-  (format t "grouped entrys /System: ~S~%"
-          (group-by-categories (find-entries *entry-list* :categories '("System"))))
-
-  (format t "grouped entrys /: ~S~%"
-          (group-by-categories (find-entries *entry-list* :categories '("AudioVideo"))))
   (format t "menu ~S~%" (build-menu '("AudioVideo") :min-entry-in-category 3))
 
   (format t "menu ~S~%" (build-menu '("Network") :min-entry-in-category 5))

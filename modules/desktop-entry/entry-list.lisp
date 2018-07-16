@@ -6,7 +6,7 @@
   (:documentation "add an entry to entry-list"))
 
 (defmethod add-to-entry-list ((entry-list list) (entry desktop-entry))
-  (if (position entry entry-list :test #'desktop-entry-equalp)
+  (if (member entry entry-list :test #'desktop-entry-equalp)
       entry-list
       (append entry-list (list entry))))
 
@@ -22,10 +22,9 @@
 
 (defun find-categories (entry-list &optional &key (test #'(lambda (entry) T)))
   (flet ((add-category-to-list (category category-list)
-           (let ((index (position category category-list :test #'string=)))
-             (when (not index)
-               (setf category-list (nconc category-list (list category))))
-             category-list)))
+           (when (not (member category category-list :test #'string=))
+             (setf category-list (nconc category-list (list category))))
+           category-list))
     (let ((category-list nil))
       (dolist (entry entry-list)
         (when (funcall test entry)
@@ -45,7 +44,7 @@
       (setf grouped-entrys (cons (cons category nil) grouped-entrys))
       (dolist (entry entry-list)
         (when (and (entry-in-categories-p entry (list category))
-                   (not (position category
+                   (not (member category
                                   exceptive-categories
                                   :test #'string=)))
           (setf (cdr (car grouped-entrys))
@@ -55,9 +54,9 @@
              when (>= (length (cdr item)) min-entry-in-category)
              collect item))
     (dolist (entry entry-list)
-      (when (not (position entry grouped-entrys
+      (when (not (member entry grouped-entrys
                            :test
-                           #'(lambda (a b) (position a (cdr b) :test #'eq))))
+                           #'(lambda (a b) (member a (cdr b) :test #'eq))))
         (setf other-entrys (cons entry other-entrys))))
     (append grouped-entrys other-entrys)))
 
@@ -74,10 +73,10 @@
          (others
           (loop for entry in entry-list
              when (not
-                   (position entry groups
+                   (member entry groups
                              :test
                              #'(lambda (a b)
-                                 (position a (cdr b)
+                                 (member a (cdr b)
                                            :test #'eq))))
              collect entry)))
     (append groups (list (cons nil others)))))
