@@ -20,18 +20,16 @@
      when (funcall test entry)
      collect entry))
 
-(defun find-categories (entry-list &optional &key (test #'(lambda (entry) T)))
-  (flet ((add-category-to-list (category category-list)
-           (when (not (member category category-list :test #'string=))
-             (setf category-list (nconc category-list (list category))))
-           category-list))
-    (let ((category-list nil))
-      (dolist (entry entry-list)
-        (when (funcall test entry)
-          (dolist (category (categories entry))
-            (setf category-list
-                  (add-category-to-list category category-list)))))
-      category-list)))
+(defun find-categories (entry-list
+                        &optional
+                        &key
+                          (modify #'(lambda (entry) (categories entry))))
+  (let ((category-list nil))
+    (dolist (entry entry-list)
+      (dolist (category (funcall modify entry))
+        (when (not (member category category-list :test #'string=))
+          (setf category-list (nconc category-list (list category))))))
+    category-list))
 
 (defun group-by-categories (entry-list &optional &key
                                                    (categories nil)
