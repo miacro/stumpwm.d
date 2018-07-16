@@ -151,7 +151,11 @@
                        "System" "TerminalEmulator")
                      (find-categories
                       *true-value-entry*
-                      :test #'(lambda (entry) (not (only-show-in entry)))))))
+                      :modify
+                      #'(lambda (entry)
+                          (if (only-show-in entry)
+                              nil
+                              (categories entry)))))))
   (fiveam:test
    test-entry-in-categories-p
    (let ((entry-1 (first *true-value-entry*))
