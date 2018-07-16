@@ -43,8 +43,8 @@
       (dolist (entry entry-list)
         (when (and (entry-in-categories-p entry (list category))
                    (not (member category
-                                  exceptive-categories
-                                  :test #'string=)))
+                                exceptive-categories
+                                :test #'string=)))
           (setf (cdr (car grouped-entrys))
                 (cons entry (cdr (car grouped-entrys)))))))
     (setf grouped-entrys
@@ -53,13 +53,15 @@
              collect item))
     (dolist (entry entry-list)
       (when (not (member entry grouped-entrys
-                           :test
-                           #'(lambda (a b) (member a (cdr b) :test #'eq))))
+                         :test
+                         #'(lambda (a b) (member a (cdr b) :test #'eq))))
         (setf other-entrys (cons entry other-entrys))))
     (append grouped-entrys other-entrys)))
 
 
-(defun group-entries (entry-list &key categories)
+(defun group-entries (entry-list &optional &key (categories nil)
+                                             (min-count 0))
+  (when (not categories) (setf categories (find-categories entry-list)))
   (let* ((groups
           (loop for category in categories
              when (not (eq category nil))
@@ -68,13 +70,20 @@
                      (loop for entry in entry-list
                         when (entry-in-categories-p entry (list category))
                         collect entry))))
+         (groups
+          (loop for item in groups
+             when (cond ((not min-count) t)
+                        ((<= min-count 0) t)
+                        ((<= min-count (length (cdr item))) t)
+                        (t nil))
+             collect item))
          (others
           (loop for entry in entry-list
              when (not
                    (member entry groups
-                             :test
-                             #'(lambda (a b)
-                                 (member a (cdr b)
-                                           :test #'eq))))
+                           :test
+                           #'(lambda (a b)
+                               (member a (cdr b)
+                                       :test #'eq))))
              collect entry)))
     (append groups (list (cons nil others)))))

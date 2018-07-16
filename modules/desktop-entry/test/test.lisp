@@ -222,7 +222,68 @@
                      collect (nth index *true-value-entry*))))
       (group-entries *true-value-entry*
                      :categories
-                     '("DesktopSettings" nil "Development")))))
+                     '("DesktopSettings" nil "Development")))
+     (compare-groups
+      (list (list "Network"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            (list "WebBrowser"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            nil)
+      (group-entries (list (first *true-value-entry*)
+                           (nth 5 *true-value-entry*))))
+     (compare-groups
+      (list (list "Network"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            (list "WebBrowser"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            nil)
+      (group-entries (list (first *true-value-entry*)
+                           (nth 5 *true-value-entry*))
+                     :min-count nil))
+     (compare-groups
+      (list (list "Network"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            (list "WebBrowser"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            nil)
+      (group-entries (list (first *true-value-entry*)
+                           (nth 5 *true-value-entry*))
+                     :min-count 0))
+     (compare-groups
+      (list (list "Network"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            (list "WebBrowser"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            nil)
+      (group-entries (list (first *true-value-entry*)
+                           (nth 5 *true-value-entry*))
+                     :min-count -1))
+     (compare-groups
+      (list (list "Network"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            (list "WebBrowser"
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*))
+            nil)
+      (group-entries (list (first *true-value-entry*)
+                           (nth 5 *true-value-entry*))
+                     :min-count 1))
+     (compare-groups
+      (list (list nil
+                  (first *true-value-entry*)
+                  (nth 5 *true-value-entry*)))
+      (group-entries (list (first *true-value-entry*)
+                           (nth 5 *true-value-entry*))
+                     :min-count 3))))
 
   (fiveam:run! 'test-desktop-entry-suite)
   (return-from test-desktop-entry)
