@@ -33,8 +33,10 @@
   (setf *favorite-list* (add-to-entry-list *favorite-list* entry)))
 
 (defmethod add-favorite-entry ((entry-name string))
-  (let ((entry-index (position entry-name *entry-list*
-                               :test #'(lambda (name entry) (string= name (name entry))))))
+  (let ((entry-index (position
+                      entry-name *entry-list*
+                      :test #'(lambda (name entry)
+                                (string= name (name entry))))))
     (when entry-index
       (add-favorite-entry (nth entry-index *entry-list*)))))
 
@@ -46,108 +48,98 @@
       (setf *entry-list*
             (add-to-entry-list *entry-list* entry-file)))))
 
-(defun build-menu (&optional (categories nil)
-                   &key
-                     (entry-list *entry-list*)
-                     (min-entry-in-category nil)
-                     (main-categories *main-categories*))
-  (setf entry-list
-        (find-entries entry-list
-                      :test #'(lambda (entry)
-                                (and (not (no-display entry))
-                                     (not (only-show-in entry))
-                                     (string= "Application" (entry-type entry))
-                                     (entry-in-categories-p entry categories)))))
-  (let ((grouped-entrys
-         (group-by-categories entry-list
-                              :categories (if categories nil *main-categories*)
-                              :exceptive-categories categories
-                              :min-entry-in-category min-entry-in-category))
-        (menu nil))
-    (dolist (item grouped-entrys)
-      (cond
-        ((and (listp item)
-              (not (position (car item)
-                             categories
-                             :test #'string=)))
-         (setf menu
-               (cons (cons (concatenate 'string (car item) " >>")
-                           (car item))
-                     menu)))
-        ((typep item 'desktop-entry)
-         (setf menu
-               (cons (cons (name item) item) menu)))))
+(def build-menu (categories)
+  (let* ((min-entries-in-category (if (not categories) nil 5))
+         (favorite-p (if (string= (first categories) *favorite-category*)
+                         t
+                         nil))
+         (entry-list
+          (find-entries
+           (if favorite-p *favorite-list* *entry-list*)
+           :test #'(lambda (entry)
+                     (and (not (no-display entry))
+                          (not (only-show-in entry))
+                          (string= "Application" (entry-type entry))
+                          (entry-in-categories-p
+                           entry
+                           (if favorite-p
+                               (cdr categories)
+                               categories))))))
+         (menu
+          (group-entries
+           entry-list
+           :categories
+           (if categories
+               (loop for item in (find-categories entry-list)
+                  when (not (member item categories :test #'string=))
+                  collect item)
+               *main-categories*)
+           :min-count min-entries-in-category))
+         (menu (loop for item in menu
+                  when (not (car item))
+                  append (loop for entry in (cdr item)
+                            collect (cons (name entry)
+                                          entry))
+                  else
+                  collect (cons (car item) (car item))))
+         (menu (sort-menu menu))
+         (menu (if categories menu
+                   (cons (cons *favorite-category*
+                               *favorite-category*)
+                         menu)))
+         )
     menu))
 
-(stumpwm:defcommand show-menu ()
+(def sort-menu (menu)
+  (sort menu
+        #'(lambda (x y)
+            (cond
+              ((and (typep x 'desktop-entry)
+                    (stringp y))
+               nil)
+              ((and (stringp x)
+                    (typep y 'desktop-entry))
+               T)
+              ((and (stringp x)
+                    (stringp y))
+               (string-lessp x y))
+              ((and (typep x 'desktop-entry)
+                    (typep y 'desktop-entry))
+               (string-lessp (name x) (name y)))
+              (T nil))) :key #'cdr))
+
+
+(defcommand show-menu ()
   ()
   "show the application menu"
-  (let ((stack-categories nil) (stack-type :root))
+  (let ((categories nil))
     (loop
-       (let*
-           ((stack-type
-             (cond
-               ((not stack-categories) :root)
-               ((string= (first stack-categories) *favorite-category*)
-                :favorite)
-               (T :normal)))
-            (menu
-             (build-menu
-              (cond
-                ((eq stack-type :favorite) (cdr stack-categories))
-                (T stack-categories))
-              :entry-list (cond
-                            ((eq stack-type :favorite)
-                             *favorite-list*)
-                            (T *entry-list*))
-              :min-entry-in-category (if (eq stack-type :root) 1 nil)))
-            (menu
-             (sort menu
-                   #'(lambda (x y)
-                       (cond
-                         ((and (typep x 'desktop-entry)
-                               (stringp y))
-                          nil)
-                         ((and (stringp x)
-                               (typep y 'desktop-entry))
-                          T)
-                         ((and (stringp x) (stringp y))
-                          (string-lessp x y))
-                         ((and (typep x 'desktop-entry) (typep y 'desktop-entry))
-                          (string-lessp (name x) (name y)))
-                         (T nil))) :key #'cdr))
-            (menu
-             (cond
-               ((eq stack-type :root)
-                (cons (cons
-                       (concatenate 'string *favorite-category* " >>")
-                       *favorite-category*)
-                      menu))
-               (T menu)))
-            (menu
-             (if stack-categories
-                 (append menu (list (cons ".." :up) (cons "...." nil)))
-                 (append menu (list (cons ".." nil)))))
-            (menu
-             (loop for item in menu
-                collect (cons (concatenate 'string "^[^6*^b" (car item) "^]")
-                              (cdr item))))
-            (prompt (let ((prompt-string "/"))
-                      (dolist (category (reverse stack-categories))
-                        (setf prompt-string
-                              (concatenate 'string prompt-string category "/")))
-                      (setf prompt-string
-                            (concatenate 'string prompt-string ":"))))
-            (item (handler-case
-                      (cdr (stumpwm:select-from-menu
-                            (stumpwm:current-screen) menu prompt))
-                    (error (condition) nil))))
-         (cond
-           ((not item) (return))
-           ((typep item 'desktop-entry)
-            (stumpwm:run-shell-command (command-line item))
-            (return))
-           ((stringp item)
-            (push item stack-categories))
-           ((eq item :up)
-            (pop stack-categories)))))))
+       (let* (menu (build-menu categories))
+         (menu (if categories
+                   (append menu (list (cons ".." :up)
+                                      (cons "...." nil)))
+                   (append menu (list (cons ".." nil)))))
+         (menu (loop for item in menu
+                  collect
+                    (if (stringp (cdr item))
+                        (cons (concatenate 'string (car item) " >>")
+                              (cdr item))
+                        item)))
+         (menu (loop for item in menu
+                  collect (cons
+                           (concatenate 'string "^[^6*^b" (car item) "^]")
+                           (cdr item))))
+         (item (handler-case
+                   (cdr (stumpwm:select-from-menu
+                         (stumpwm:current-screen)
+                         menu
+                         (format nil "/~{~A/~}:" (reverse categories))))
+                 (error (condition) nil))))
+       (cond
+         ((not item) (return))
+         ((stringp item) (push item categories))
+         ((typep item 'desktop-entry)
+          (stumpwm:run-shell-command (command-line item))
+          (return))
+         ((eq item :up)
+          (pop categories))))))

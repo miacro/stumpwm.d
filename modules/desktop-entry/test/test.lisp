@@ -138,6 +138,10 @@
      (fiveam:is (equal '("Network" "WebBrowser" "Test")
                        (categories entry)))))
 
+  (fiveam:def-suite test-entry-list-suite)
+  (fiveam:in-suite test-entry-list-suite)
+
+
   (fiveam:test
    test-find-categories
    (fiveam:is (equal '("Network" "WebBrowser"
@@ -211,7 +215,8 @@
                                  (loop for index in '(1 2 3 4)
                                     collect (nth index *true-value-entry*))))
                      (group-entries *true-value-entry*
-                                    :categories '("Network" "WebBrowser")))
+                                    :categories
+                                    '("Network" "WebBrowser")))
      (compare-groups
       (list (list "DesktopSettings"
                   (fifth *true-value-entry*))
@@ -224,13 +229,9 @@
                      :categories
                      '("DesktopSettings" nil "Development")))
      (compare-groups
-      (list (list "Network"
+      (list (list nil
                   (first *true-value-entry*)
-                  (nth 5 *true-value-entry*))
-            (list "WebBrowser"
-                  (first *true-value-entry*)
-                  (nth 5 *true-value-entry*))
-            nil)
+                  (nth 5 *true-value-entry*)))
       (group-entries (list (first *true-value-entry*)
                            (nth 5 *true-value-entry*))))
      (compare-groups
@@ -243,6 +244,8 @@
             nil)
       (group-entries (list (first *true-value-entry*)
                            (nth 5 *true-value-entry*))
+                     :categories
+                     '("Network" "WebBrowser")
                      :min-count nil))
      (compare-groups
       (list (list "Network"
@@ -254,6 +257,8 @@
             nil)
       (group-entries (list (first *true-value-entry*)
                            (nth 5 *true-value-entry*))
+                     :categories
+                     '("Network" "WebBrowser")
                      :min-count 0))
      (compare-groups
       (list (list "Network"
@@ -265,6 +270,8 @@
             nil)
       (group-entries (list (first *true-value-entry*)
                            (nth 5 *true-value-entry*))
+                     :categories
+                     '("Network" "WebBrowser")
                      :min-count -1))
      (compare-groups
       (list (list "Network"
@@ -276,6 +283,8 @@
             nil)
       (group-entries (list (first *true-value-entry*)
                            (nth 5 *true-value-entry*))
+                     :categories
+                     '("Network" "WebBrowser")
                      :min-count 1))
      (compare-groups
       (list (list nil
@@ -283,13 +292,16 @@
                   (nth 5 *true-value-entry*)))
       (group-entries (list (first *true-value-entry*)
                            (nth 5 *true-value-entry*))
+                     :categories
+                     '("Network" "WebBrowser")
                      :min-count 3))))
 
   (fiveam:run! 'test-desktop-entry-suite)
-  (return-from test-desktop-entry)
+  (fiveam:run! 'test-entry-list-suite)
 
-  (format t "menu ~S~%" (build-menu '("AudioVideo") :min-entry-in-category 3))
+  ;; (init-entry-list)
+  ;; (format t "menu ~S~%" (build-menu '("AudioVideo") :min-entry-in-category 3))
 
-  (format t "menu ~S~%" (build-menu '("Network") :min-entry-in-category 5))
+  ;; (format t "menu ~S~%" (build-menu '("Office") :min-entry-in-category 5))
   (return-from test-desktop-entry)
   )

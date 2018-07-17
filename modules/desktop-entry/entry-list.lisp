@@ -59,9 +59,8 @@
     (append grouped-entrys other-entrys)))
 
 
-(defun group-entries (entry-list &optional &key (categories nil)
+(defun group-entries (entry-list &optional &key categories
                                              (min-count 0))
-  (when (not categories) (setf categories (find-categories entry-list)))
   (let* ((groups
           (loop for category in categories
              when (not (eq category nil))
@@ -72,7 +71,8 @@
                         collect entry))))
          (groups
           (loop for item in groups
-             when (cond ((not min-count) t)
+             when (cond ((<= (length (cdr item)) 0) nil)
+                        ((not min-count) t)
                         ((<= min-count 0) t)
                         ((<= min-count (length (cdr item))) t)
                         (t nil))
