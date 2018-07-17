@@ -109,7 +109,7 @@
               (T nil))) :key #'cdr))
 
 
-(defcommand show-menu ()
+(stumpwm:defcommand show-menu ()
   ()
   "show the application menu"
   (let ((categories nil))
