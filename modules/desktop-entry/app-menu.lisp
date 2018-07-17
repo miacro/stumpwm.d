@@ -90,7 +90,7 @@
          )
     menu))
 
-(def sort-menu (menu)
+(defun sort-menu (menu)
   (sort menu
         #'(lambda (x y)
             (cond
