@@ -83,11 +83,12 @@
                   else
                   collect (cons (car item) (car item))))
          (menu (sort-menu menu))
-         (menu (if categories menu
-                   (cons (cons *favorite-category*
-                               *favorite-category*)
-                         menu)))
-         )
+         (menu (if categories
+                   menu
+                   (cons
+                    (cons *favorite-category*
+                          *favorite-category*)
+                    menu))))
     menu))
 
 (defun sort-menu (menu)
@@ -114,32 +115,32 @@
   "show the application menu"
   (let ((categories nil))
     (loop
-       (let* (menu (build-menu categories))
-         (menu (if categories
-                   (append menu (list (cons ".." :up)
-                                      (cons "...." nil)))
-                   (append menu (list (cons ".." nil)))))
-         (menu (loop for item in menu
-                  collect
-                    (if (stringp (cdr item))
-                        (cons (concatenate 'string (car item) " >>")
-                              (cdr item))
-                        item)))
-         (menu (loop for item in menu
-                  collect (cons
-                           (concatenate 'string "^[^6*^b" (car item) "^]")
-                           (cdr item))))
-         (item (handler-case
-                   (cdr (stumpwm:select-from-menu
-                         (stumpwm:current-screen)
-                         menu
-                         (format nil "/~{~A/~}:" (reverse categories))))
-                 (error (condition) nil))))
-       (cond
-         ((not item) (return))
-         ((stringp item) (push item categories))
-         ((typep item 'desktop-entry)
-          (stumpwm:run-shell-command (command-line item))
-          (return))
-         ((eq item :up)
-          (pop categories))))))
+       (let* ((menu (build-menu categories))
+              (menu (if categories
+                        (append menu (list (cons ".." :up)
+                                           (cons "...." nil)))
+                        (append menu (list (cons ".." nil)))))
+              (menu (loop for item in menu
+                       collect
+                         (if (stringp (cdr item))
+                             (cons (concatenate 'string (car item) " >>")
+                                   (cdr item))
+                             item)))
+              (menu (loop for item in menu
+                       collect (cons
+                                (concatenate 'string "^[^6*^b" (car item) "^]")
+                                (cdr item))))
+              (item (handler-case
+                        (cdr (stumpwm:select-from-menu
+                              (stumpwm:current-screen)
+                              menu
+                              (format nil "/~{~A/~}:" (reverse categories))))
+                      (error (condition) nil))))
+         (cond
+           ((not item) (return))
+           ((stringp item) (push item categories))
+           ((typep item 'desktop-entry)
+            (stumpwm:run-shell-command (command-line item))
+            (return))
+           ((eq item :up)
+            (pop categories)))))))
