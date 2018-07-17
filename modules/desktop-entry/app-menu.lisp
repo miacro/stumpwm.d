@@ -48,7 +48,7 @@
       (setf *entry-list*
             (add-to-entry-list *entry-list* entry-file)))))
 
-(def build-menu (categories)
+(defun build-menu (categories)
   (let* ((min-entries-in-category (if (not categories) nil 5))
          (favorite-p (if (string= (first categories) *favorite-category*)
                          t
