@@ -15,7 +15,7 @@ if you are using Quicklisp, then in the REPL:
 (load-module "desktop-entry")
 #+END_SRC
 
-- Initialize "*entry-list*" with the "*entry-paths*"
+- Initialize \*entry-list\* with the \*entry-paths\*
 #+BEGIN_SRC lisp
 (desktop-entry:init-entry-list)
 #+END_SRC
@@ -33,14 +33,16 @@ The default *entry-paths* is
 (desktop-entry:init-entry-list [entry paths])
 #+END_SRC
 
-- add an entry to entry-list
+- Add an entry to entry-list
 #+BEGIN_SRC lisp
 (desktop-entry:add-to-entry-list
   desktop-entry:*entry-list*
   #P"xxx.desktop")
+
 (desktop-entry:add-to-entry-list
   desktop-entry:*entry-list*
   (desktop-entry:make-desktop-entry #P"xxx.desktop"))
+
 (desktop-entry:add-to-entry-list
   desktop-entry:*entry-list*
   (desktop-entry:make-desktop-entry
@@ -54,7 +56,7 @@ The default *entry-paths* is
       :terminal nil)))
 #+END_SRC
 
-- add favorite
+- Add favorite
 #+BEGIN_SRC lisp
 (desktop-entry:add-favorite-entry <instance of desktop-entry>)
 (desktop-entry:add-favorite-entry <name of an entry in *entry-list*>)
