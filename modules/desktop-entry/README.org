@@ -15,11 +15,11 @@ if you are using Quicklisp, then in the REPL:
 (load-module "desktop-entry")
 #+END_SRC
 
-- Initialize \*entry-list\* with the \*entry-paths\*
+- Initialize =*entry-list*= with the =*entry-paths*=
 #+BEGIN_SRC lisp
 (desktop-entry:init-entry-list)
 #+END_SRC
-The default *entry-paths* is
+The default =*entry-paths*= is
 #+BEGIN_SRC lisp
 (defvar *entry-paths*
   '(#P"/usr/share/applications"
