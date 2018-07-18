@@ -4,6 +4,11 @@
   (:use #:cl)
   (:export :show-menu
            :load-desktop-file
-           :load-menu-file
-           :init-menu))
-
+           :add-favorite-entry
+           :init-entry-list
+           :add-to-entry-list
+           :desktop-entry
+           :make-desktop-entry
+           :*entry-list*
+           :*favorite-list*
+           :*entry-paths*))

@@ -31,34 +31,6 @@
           (setf category-list (nconc category-list (list category))))))
     category-list))
 
-(defun group-by-categories (entry-list &optional &key
-                                                   (categories nil)
-                                                   (min-entry-in-category nil)
-                                                   (exceptive-categories nil))
-  (when (not min-entry-in-category) (setf min-entry-in-category 5))
-  (when (not categories) (setf categories (find-categories entry-list)))
-  (let ((grouped-entrys nil) (other-entrys nil))
-    (dolist (category categories)
-      (setf grouped-entrys (cons (cons category nil) grouped-entrys))
-      (dolist (entry entry-list)
-        (when (and (entry-in-categories-p entry (list category))
-                   (not (member category
-                                exceptive-categories
-                                :test #'string=)))
-          (setf (cdr (car grouped-entrys))
-                (cons entry (cdr (car grouped-entrys)))))))
-    (setf grouped-entrys
-          (loop for item in grouped-entrys
-             when (>= (length (cdr item)) min-entry-in-category)
-             collect item))
-    (dolist (entry entry-list)
-      (when (not (member entry grouped-entrys
-                         :test
-                         #'(lambda (a b) (member a (cdr b) :test #'eq))))
-        (setf other-entrys (cons entry other-entrys))))
-    (append grouped-entrys other-entrys)))
-
-
 (defun group-entries (entry-list &optional &key categories
                                              (min-count 0))
   (let* ((groups
