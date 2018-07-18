@@ -15,16 +15,19 @@ if you are using Quicklisp, then in the REPL:
 (load-module "desktop-entry")
 #+END_SRC
 
-- Initialize =*entry-list*= with the =*entry-paths*=
+- Initialize ~*entry-list*~ with the ~*entry-paths*~
 #+BEGIN_SRC lisp
 (desktop-entry:init-entry-list)
 #+END_SRC
-  The default =*entry-paths*= is
- *'(#P"/usr/share/applications" #P"~/.local/share/applications")*
-
 
 * Customize
-- Specify other entry-paths
+- The ~*entry-paths*~ is defined as
+#+BEGIN_SRC lisp
+(defvar *entry-paths*
+  '(#P"/usr/share/applications"
+    #P"~/.local/share/applications"))
+#+END_SRC
+You can change the value of it before init-entry-list or specify other entry-paths
 #+BEGIN_SRC lisp
 (desktop-entry:init-entry-list [entry paths])
 #+END_SRC
