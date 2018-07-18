@@ -20,7 +20,7 @@ if you are using Quicklisp, then in the REPL:
 (desktop-entry:init-entry-list)
 #+END_SRC
 
-- Add show-menu command to your keybindings, e.g.:
+- Add show-desktop-menu command to your keybindings, e.g.:
 #+BEGIN_SRC lisp
 (define-key *root-map* (kbd "m") "show-desktop-menu")
 #+END_SRC
