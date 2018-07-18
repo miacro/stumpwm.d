@@ -20,6 +20,11 @@ if you are using Quicklisp, then in the REPL:
 (desktop-entry:init-entry-list)
 #+END_SRC
 
+- Add show-menu command to your keybindings, e.g.:
+#+BEGIN_SRC lisp
+(define-key *root-map* (kbd "m") "show-desktop-menu")
+#+END_SRC
+
 * Customize
 - The ~*entry-paths*~ is defined as below,
   you can change the value of it before initialization

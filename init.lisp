@@ -12,7 +12,7 @@
 (ql:quickload :py-configparser)
 
 (defun add-to-load-path-recursive (path)
-  (dolist (module-path (stumpwm::build-load-path path)) 
+  (dolist (module-path (stumpwm::build-load-path path))
     (stumpwm:add-to-load-path module-path)))
 
 (add-to-load-path-recursive "~/.stumpwm.d/stumpwm-contrib")
@@ -39,16 +39,16 @@
 ;;(setf *debug-level* 1)
 ;;(redirect-all-output (data-dir-file ".debug/debug-output" "txt"))
 
-(defun my-popup (mode-line button x y) 
-  (echo (format nil "~A ~A ~A ~A" 
+(defun my-popup (mode-line button x y)
+  (echo (format nil "~A ~A ~A ~A"
                 mode-line button x y
                 )))
 ;;(add-hook *mode-line-click-hook* 'my-popup)
 (load-module "miacro-theme")
 (load-module "desktop-entry")
 (defcommand display-random-background () ()
-  (miacro-theme:display-background 
-    (miacro-theme:select-random-background "~/pictures")))
+            (miacro-theme:display-background
+             (miacro-theme:select-random-background "~/pictures")))
 (run-with-timer 0 3600 #'display-random-background)
 (grename "1")
 (gnewbg "2")
@@ -70,30 +70,30 @@
 
 (setf *mode-line-timeout* 1)
 (setf stumpwm:*screen-mode-line-format*
-  (list
-    (miacro-theme:mode-line-unit "%n")
-    "^[^7*^B%W^]"
-    "^>" ; right align
-    (miacro-theme:mode-line-unit "%h")
-    (miacro-theme:mode-line-unit "^[^5*^B%c%M^]")
-    (miacro-theme:mode-line-unit "^[^5*^B%l^]")
-    (miacro-theme:mode-line-separator-start)
-    '(:eval (string-right-trim '(#\Newline) 
-              (run-shell-command
-                "date +'^[^B%Y-%m-%d ^6*%H:%M:%S %a^]'" t)))
-    (miacro-theme:mode-line-separator-end)
-    "   "))
+      (list
+       (miacro-theme:mode-line-unit "%n")
+       "^[^7*^B%W^]"
+       "^>" ; right align
+       (miacro-theme:mode-line-unit "%h")
+       (miacro-theme:mode-line-unit "^[^5*^B%c%M^]")
+       (miacro-theme:mode-line-unit "^[^5*^B%l^]")
+       (miacro-theme:mode-line-separator-start)
+       '(:eval (string-right-trim '(#\Newline)
+                (run-shell-command
+                 "date +'^[^B%Y-%m-%d ^6*%H:%M:%S %a^]'" t)))
+       (miacro-theme:mode-line-separator-end)
+       "   "))
 
 (toggle-mode-line (current-screen) (current-head))
 
 (desktop-entry::init-entry-list)
-(define-key *root-map* (kbd "m") "show-menu")
+(define-key *root-map* (kbd "m") "show-desktop-menu")
 (desktop-entry::add-favorite-entry "Google Chrome")
 (desktop-entry::add-favorite-entry "GNU Emacs")
 (defun run-command-from-file (filename)
   (with-open-file (stream filename :direction :input)
     (loop for command in (read stream)
-      do (run-shell-command command nil))))
+       do (run-shell-command command nil))))
 (defvar command-file "~/.stumpwm.d/.initrc")
 (when (probe-file command-file)
   (run-command-from-file "~/.stumpwm.d/.initrc"))

@@ -1,4 +1,4 @@
-;;;; app-menu.lisp
+;;;; utils.lisp
 
 (in-package #:desktop-entry)
 (defun string-split (regex target-string)

@@ -1,4 +1,4 @@
-;;;; app-menu.lisp
+;;;; desktop-entry.lisp
 
 (in-package #:desktop-entry)
 

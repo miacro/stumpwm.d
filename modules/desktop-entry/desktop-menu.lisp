@@ -1,4 +1,4 @@
-;;;; app-menu.lisp
+;;;; desktop-menu.lisp
 
 (in-package #:desktop-entry)
 
@@ -110,7 +110,7 @@
               (T nil))) :key #'cdr))
 
 
-(stumpwm:defcommand show-menu ()
+(stumpwm:defcommand show-desktop-menu ()
   ()
   "show the application menu"
   (let ((categories nil))
