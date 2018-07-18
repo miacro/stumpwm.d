@@ -1,4 +1,4 @@
-Load desktop entry files(*.desktop) and show them in an application menu for launching these commands
+Load desktop entry files(*.desktop) and show them in an application menu for launching commands
 
 * Requirements
 - py-configparser: parsing desktop entry file
@@ -15,7 +15,7 @@ if you are using Quicklisp, then in the REPL:
 (load-module "desktop-entry")
 #+END_SRC
 
-- Initialize *entry-list* with the *entry-paths*
+- Initialize "*entry-list*" with the "*entry-paths*"
 #+BEGIN_SRC lisp
 (desktop-entry:init-entry-list)
 #+END_SRC
