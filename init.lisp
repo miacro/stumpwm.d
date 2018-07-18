@@ -86,10 +86,11 @@
 
 (toggle-mode-line (current-screen) (current-head))
 
-(desktop-entry::init-entry-list)
+(desktop-entry:init-entry-list)
 (define-key *root-map* (kbd "m") "show-desktop-menu")
-(desktop-entry::add-favorite-entry "Google Chrome")
-(desktop-entry::add-favorite-entry "GNU Emacs")
+(desktop-entry:add-favorite-entry "Google Chrome")
+(desktop-entry:add-favorite-entry "GNU Emacs")
+
 (defun run-command-from-file (filename)
   (with-open-file (stream filename :direction :input)
     (loop for command in (read stream)
