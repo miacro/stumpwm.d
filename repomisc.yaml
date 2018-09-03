@@ -1,6 +1,4 @@
-repomisc:
-  repo:
-    reponame: "stumpwm.d"
-    commands:
-      install:
-      - "make link"
+reponame: "stumpwm.d"
+commands:
+  install:
+  - "make link"
