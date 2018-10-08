@@ -1,26 +1,18 @@
 MAKE=make --no-print-directory
 SHELL=/bin/bash
 
-SOURCE_DIR=`pwd`
+SOURCE_DIR=$(realpath .)
 TARGET_DIR=${HOME}/.stumpwm.d
 CACHE_DIR=${TARGET_DIR}/.cache
 MODULE_DIR=${TARGET_DIR}/modules
 REPO_URL=
 REPO_DIR=
 
-relink:
-	@  ${MAKE} unlink \
-  && ${MAKE} link
-
 link:
-	@  [[ ! -L ${TARGET_DIR} ]] && [[ ! -f ${TARGET_DIR} ]] \
-  && ln -s ${SOURCE_DIR} ${TARGET_DIR} \
-  ||  exit 0
+	ln -fs -T ${SOURCE_DIR} ${TARGET_DIR}
 
 unlink:
-	@  [[ -L ${TARGET_DIR} ]] \
-  && rm ${TARGET_DIR} \
-  || exit 0
+	[[ -L ${TARGET_DIR} ]] && rm ${TARGET_DIR} || exit 0
 
 install-stumpwm:
 	make prepare-libs \
