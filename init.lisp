@@ -75,7 +75,7 @@
        "^[^7*^B%W^]"
        "^>" ; right align
        (miacro-theme:mode-line-unit "%h")
-       (miacro-theme:mode-line-unit "^[^5*^B%c%M^]")
+       (miacro-theme:mode-line-unit "^[^5*^B%M^]")
        (miacro-theme:mode-line-unit "^[^5*^B%l^]")
        (miacro-theme:mode-line-separator-start)
        '(:eval (string-right-trim '(#\Newline)
