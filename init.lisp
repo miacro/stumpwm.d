@@ -73,7 +73,7 @@
        (miacro-theme:mode-line-unit "%n")
        "^[^7*^B%W^]"
        "^>" ; right align
-       (miacro-theme:mode-line-unit "%h")
+       ;; (miacro-theme:mode-line-unit "%h")
        (miacro-theme:mode-line-unit "^[^5*^B%C^]")
        (miacro-theme:mode-line-unit "^[^5*^B%M^]")
        (miacro-theme:mode-line-unit "^[^5*^B%l^]")
