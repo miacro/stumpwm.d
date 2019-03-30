@@ -41,8 +41,7 @@
 
 (defun my-popup (mode-line button x y)
   (echo (format nil "~A ~A ~A ~A"
-                mode-line button x y
-                )))
+                mode-line button x y)))
 ;;(add-hook *mode-line-click-hook* 'my-popup)
 (load-module "miacro-theme")
 (load-module "desktop-entry")
@@ -75,6 +74,7 @@
        "^[^7*^B%W^]"
        "^>" ; right align
        (miacro-theme:mode-line-unit "%h")
+       (miacro-theme:mode-line-unit "^[^5*^B%C^]")
        (miacro-theme:mode-line-unit "^[^5*^B%M^]")
        (miacro-theme:mode-line-unit "^[^5*^B%l^]")
        (miacro-theme:mode-line-separator-start)
@@ -82,7 +82,7 @@
                 (run-shell-command
                  "date +'^[^B%Y-%m-%d ^6*%H:%M:%S %a^]'" t)))
        (miacro-theme:mode-line-separator-end)
-       "   "))
+       "    "))
 
 (toggle-mode-line (current-screen) (current-head))
 
