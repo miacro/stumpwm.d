@@ -97,3 +97,9 @@
 (defvar command-file "~/.stumpwm.d/.initrc")
 (when (probe-file command-file)
   (run-command-from-file "~/.stumpwm.d/.initrc"))
+;; C-t C-c for xterm
+(when (run-shell-command "where urxvt")
+  (define-key *root-map* (kbd "c") "exec urxvt"))
+;; C-t C-e for emacs
+(when (run-shell-command "where emcx")
+  (define-key *root-map* (kbd "e") "exec emcx"))
