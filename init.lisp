@@ -97,9 +97,20 @@
 (defvar command-file "~/.stumpwm.d/.initrc")
 (when (probe-file command-file)
   (run-command-from-file "~/.stumpwm.d/.initrc"))
+
+(defun shell-command-exists-p (command)
+  (if (string=
+        (run-shell-command
+          (concatenate 'string
+            "type -a "
+            command
+            " > /dev/null && echo -n true || echo -n false") T)
+        "true")
+   T
+   nil))
 ;; C-t C-c for xterm
-(when (run-shell-command "where urxvt")
+(when (shell-command-exists-p "urxvt")
   (define-key *root-map* (kbd "c") "exec urxvt"))
 ;; C-t C-e for emacs
-(when (run-shell-command "where emcx")
+(when (shell-command-exists-p "emcx")
   (define-key *root-map* (kbd "e") "exec emcx"))
