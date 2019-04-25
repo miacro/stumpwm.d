@@ -89,6 +89,7 @@
 (desktop-entry:init-entry-list)
 (define-key *root-map* (kbd "m") "show-desktop-menu")
 (desktop-entry:add-favorite-entry "Google Chrome")
+(desktop-entry:add-favorite-entry "Chromium Web Browser")
 
 (defun run-command-from-file (filename)
   (with-open-file (stream filename :direction :input)
