@@ -90,7 +90,7 @@
 (define-key *root-map* (kbd "m") "show-desktop-menu")
 (desktop-entry:add-favorite-entry "Google Chrome")
 (desktop-entry:add-favorite-entry "Chromium Web Browser")
-(desktop-entry:add-favorite-entry "Remmina Connect")
+(desktop-entry:add-favorite-entry "Remmina")
 
 (defun run-command-from-file (filename)
   (with-open-file (stream filename :direction :input)
