@@ -7,10 +7,10 @@
 (defun screenshot-filename ()
    (format nil "~~/screenshot/scrot-~a.png"
               (string-trim '(#\Newline)
-                                      (run-shell-command "date +%Y%m%d%H%M%S" t))))
+                                      (stumpwm:run-shell-command "date +%Y%m%d%H%M%S" t))))
 (defun run-scrot (&optional (args ""))
    (stumpwm:run-shell-command 
-     (format nil "scrot ~a ~a" args (screenshot-filename))))
+     (format nil "scrot ~a ~a" args (screenshot-filename)) t))
 
 (stumpwm:defcommand scrot () ()
    (run-scrot))
@@ -22,10 +22,10 @@
    (run-scrot "-u"))
 
 (stumpwm:defcommand scrot-with-app () ()
-   (run-scrot (format nil "-e ~a" *exec-app*))
+   (run-scrot (format nil "-e ~a" *exec-app*)))
 
 (stumpwm:defcommand scrot-select-with-app () ()
-   (run-scrot (format nil "-s -e ~a" *exec-app*))
+   (run-scrot (format nil "-s -e ~a" *exec-app*)))
 
 (stumpwm:defcommand scrot-window-with-app () ()
-   (run-scrot (format nil "-u -e ~a" *exec-app*))
+   (run-scrot (format nil "-u -e ~a" *exec-app*)))
