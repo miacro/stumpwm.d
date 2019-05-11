@@ -31,6 +31,7 @@
 (load-module "screenshot")
 (load-module "stumptray")
 (load-module "ttf-fonts")
+;;(load-module "scrot")
 ;;(set-font "Source Code Pro 20")
 ;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
 ;;(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
@@ -48,6 +49,17 @@
 (defcommand display-random-background () ()
             (miacro-theme:display-background
              (miacro-theme:select-random-background "~/pictures")))
+
+(defun screenshot-filename ()
+  (format nil "~~/screenshot/stumpwm-screenshot-~a.png"
+          (string-trim '(#\Newline)
+                       (run-shell-command "date +%Y%m%d%H%M%S" t))))
+(defcommand screenshot-auto () ()
+            (stumpwm:run-commands
+             (format nil "screenshot ~a" (screenshot-filename))))
+(defcommand screenshot-window-auto () ()
+            (stumpwm:run-commands
+             (format nil "screenshot-window ~a" (screenshot-filename))))
 (run-with-timer 0 3600 #'display-random-background)
 (grename "1")
 (gnewbg "2")
