@@ -103,6 +103,7 @@
 (desktop-entry:add-favorite-entry "Google Chrome")
 (desktop-entry:add-favorite-entry "Chromium Web Browser")
 (desktop-entry:add-favorite-entry "Remmina")
+(desktop-entry:add-favorite-entry "GNU Image Manipulation Program")
 
 (defun run-command-from-file (filename)
   (with-open-file (stream filename :direction :input)
