@@ -31,7 +31,10 @@
 (load-module "screenshot")
 (load-module "stumptray")
 (load-module "ttf-fonts")
-;;(load-module "scrot")
+(load-module "command-history")
+(load-module "end-session")
+(load-module "scrot")
+
 ;;(set-font "Source Code Pro 20")
 ;;(set-font "*-unifont-medium-*-normal-*-16-*-*-*-*-*-*-*")
 ;;(set-font (make-instance 'xft:font :family "DejaVu Sans Mono" :subfamily "Book" :size 13))
