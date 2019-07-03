@@ -33,6 +33,7 @@
 (load-module "ttf-fonts")
 (load-module "command-history")
 (load-module "end-session")
+(load-module "globalwindows")
 (load-module "scrot")
 
 ;;(set-font "Source Code Pro 20")
