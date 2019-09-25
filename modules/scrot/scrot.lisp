@@ -26,7 +26,7 @@
 
 (defun run-scrot (&optional (extra-args ""))
   (stumpwm:run-shell-command
-   (format nil "scrot ~a ~a" extra-args (with-filename))
+   (format nil "sleep 0.2; scrot ~a ~a" extra-args (with-filename))
    nil))
 
 (stumpwm:defcommand scrot ()
