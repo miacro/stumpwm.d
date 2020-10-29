@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=STUMPWM
+Exec=/usr/bin/stumpwm
+Comment=This session logs you into STUMPWM
+TryExec=/usr/bin/stumpwm
+Type=Application
+DesktopNames=STUMPWM
