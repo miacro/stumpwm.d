@@ -88,7 +88,7 @@
 (setf stumpwm:*screen-mode-line-format*
       (list
        (miacro-theme:mode-line-unit "%n")
-       "^[^7*^B%W^]"
+       "^[^7*^B%w^]"
        "^>" ; right align
        ;; (miacro-theme:mode-line-unit "%h")
        (miacro-theme:mode-line-unit "^[^5*^B%C^]")
