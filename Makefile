@@ -10,7 +10,7 @@ REPO_DIR=
 OS=${uname -s}
 
 link:
-	ln -fs -t ${SOURCE_DIR} ${TARGET_DIR}
+	ln -fs -n ${SOURCE_DIR} ${TARGET_DIR}
 
 unlink:
 	[[ -L ${TARGET_DIR} ]] && rm ${TARGET_DIR} || exit 0
