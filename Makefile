@@ -7,15 +7,17 @@ CACHE_DIR=${TARGET_DIR}/.cache
 MODULE_DIR=${TARGET_DIR}/modules
 REPO_URL=
 REPO_DIR=
+OS=${uname -s}
 
 link:
-	ln -fs -T ${SOURCE_DIR} ${TARGET_DIR}
+	ln -fs -t ${SOURCE_DIR} ${TARGET_DIR}
 
 unlink:
 	[[ -L ${TARGET_DIR} ]] && rm ${TARGET_DIR} || exit 0
 
 install-stumpwm:
-	make prepare-libs \
+	[[ ${OS} == "Linux" ]] \
+	&& make prepare-libs \
 	&& make prepare-repo REPO_URL=https://github.com/stumpwm/stumpwm REPO_DIR=${CACHE_DIR}/stumpwm \
   && cd ${CACHE_DIR}/stumpwm \
   && autoconf \
