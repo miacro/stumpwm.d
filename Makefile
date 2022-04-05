@@ -7,7 +7,8 @@ CACHE_DIR=${TARGET_DIR}/.cache
 MODULE_DIR=${TARGET_DIR}/modules
 REPO_URL=
 REPO_DIR=
-OS=${uname -s}
+OS=`uname -s`
+QLLP="${HOME}/quicklisp/local-projects"
 
 link:
 	ln -fs -n ${SOURCE_DIR} ${TARGET_DIR}
@@ -31,12 +32,15 @@ install-contrib:
 	@  mkdir -p ${MODULE_DIR} \
   && make prepare-repo REPO_URL=https://github.com/stumpwm/stumpwm-contrib.git REPO_DIR=${MODULE_DIR}/stumpwm-contrib
 
-prepare-libs:
+prepare-libs: prepare-truetype
 	sbcl --eval "(ql:quickload :clx)" --quit \
   && sbcl --eval "(ql:quickload :cl-ppcre)" --quit \
   && sbcl --eval "(ql:quickload :xembed)" --quit \
   && sbcl --eval "(ql:quickload :alexandria)" --quit \
   && sbcl --eval "(ql:quickload :clx-truetype)" --quit
+
+prepare-truetype:
+	make prepare-repo REPO_URL=https://github.com/dmb2/clx-freetype2 REPO_DIR=${QLLP}/clx-freetype2
 
 prepare-repo:
 	@  [[ -d ${REPO_DIR}/.git ]] \
